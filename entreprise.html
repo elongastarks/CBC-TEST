@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Publier une annonce - CBC Business</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+    margin: 0; padding: 20px;
+  }
+  .container {
+    max-width: 600px;
+    margin: auto;
+    background: #fff;
+    padding: 20px 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 6px;
+  }
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  label {
+    margin: 15px 0 5px;
+    font-weight: bold;
+    color: #555;
+  }
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  select,
+  textarea {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+  }
+  textarea {
+    min-height: 100px;
+  }
+  button {
+    margin-top: 25px;
+    padding: 12px;
+    background: #007bff;
+    color: white;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #0056b3;
+  }
+@media (max-width: 640px) {
+    .container {
+      padding: 15px 20px;
+    }
+  }
+  .upload-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 260px;
+  font-family: Arial;
+}
+
+#message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Publier une annonce</h1>
+    <form id="orderForm">
+
+      <label for="title">Titre de l'entreprise *</label>
+      <input type="text" id="title" maxlength="25" name="title" required placeholder="Ex: CBC BUSINESS" />
+
+      <label for="description">Description *</label>
+      <textarea id="description" maxlength="130" name="description" required placeholder="Décrivez votre du poste... (en bref)"></textarea>
+
+      <label for="licence">Licence requise*</label>
+      <select id="licence" name="licence" required>
+        <option value="tout" disabled selected>Choisir limite de licence</option>
+        <option value="tout">Tout nouveaux</option>
+        <option value="diplome">Diplômé</option>
+        <option value="licence">Licencié</option>
+        <option value="master">Master</option>
+      </select>
+
+      <label for="salary">Salaire *</label>
+      <input type="number" id="salary" name="salary" required min="0" step="0.01" placeholder="Ex: 20" />
+      
+      <label for="province">Région (limite : province ?)</label>
+    <select id="province">
+      <option value="RDC">RDC</option>
+      <option value="Kinshasa">Kinshasa</option>
+<option value="Kongo-Central">Kongo-Central</option>
+<option value="Kwango">Kwango</option>
+<option value="Kwilu">Kwilu</option>
+<option value="Mai-Ndombe">Mai-Ndombe</option>
+<option value="Tshuapa">Tshuapa</option>
+<option value="Mongala">Mongala</option>
+<option value="Nord-Ubangi">Nord-Ubangi</option>
+<option value="Sud-Ubangi">Sud-Ubangi</option>
+<option value="Équateur">Équateur</option>
+<option value="Tshopo">Tshopo</option>
+<option value="Bas-Uele">Bas-Uele</option>
+<option value="Haut-Uele">Haut-Uele</option>
+<option value="Ituri">Ituri</option>
+<option value="Haut-Lomami">Haut-Lomami</option>
+<option value="Lomami">Lomami</option>
+<option value="Kasaï">Kasaï</option>
+<option value="Kasaï-Central">Kasaï-Central</option>
+<option value="Kasaï-Oriental">Kasaï-Oriental</option>
+<option value="Sankuru">Sankuru</option>
+<option value="Maniema">Maniema</option>
+<option value="Sud-Kivu">Sud-Kivu</option>
+<option value="Nord-Kivu">Nord-Kivu</option>
+<option value="Tanganyika">Tanganyika</option>
+<option value="Haut-Katanga">Haut-Katanga</option>
+<option value="Lualaba">Lualaba</option>
+    </select>
+    
+    <label for="ville">Région (limite : Ville ?)</label>
+    <select id="ville">
+      <option value="" disabled selected>Ville</option>
+      <option value="Bandundu">Bandundu</option>
+<option value="Baraka">Baraka</option>
+<option value="Beni">Beni</option>
+<option value="Boende">Boende</option>
+<option value="Boma">Boma</option>
+<option value="Bukavu">Bukavu</option>
+<option value="Bunia">Bunia</option>
+<option value="Buta">Buta</option>
+<option value="Butembo">Butembo</option>
+<option value="Gbadolite">Gbadolite</option>
+<option value="Gemena">Gemena</option>
+<option value="Goma">Goma</option>
+<option value="Inongo">Inongo</option>
+<option value="Isiro">Isiro</option>
+<option value="Kabinda">Kabinda</option>
+<option value="Kalemie">Kalemie</option>
+<option value="Kamina">Kamina</option>
+<option value="Kananga">Kananga</option>
+<option value="Kenge">Kenge</option>
+<option value="Kikwit">Kikwit</option>
+<option value="Kindu">Kindu</option>
+<option value="Kisangani">Kisangani</option>
+<option value="Kinshasa">Kinshasa</option>
+<option value="Kolwezi">Kolwezi</option>
+<option value="Likasi">Likasi</option>
+<option value="Lisala">Lisala</option>
+<option value="Lubumbashi">Lubumbashi</option>
+<option value="Lusambo">Lusambo</option>
+<option value="Matadi">Matadi</option>
+<option value="Mbandaka">Mbandaka</option>
+<option value="Mbujimayi">Mbujimayi</option>
+<option value="Mwene-Ditu">Mwene-Ditu</option>
+<option value="Tshikapa">Tshikapa</option>
+<option value="Uvira">Uvira</option>
+<option value="Zongo">Zongo</option>
+    </select> </br>
+    
+    <div class="upload-box">
+  <label for="pdfUpload">Upload votre fichier PDF (max 5MB)</label>
+  <input type="file" id="pdfUpload" accept=".pdf" />
+  <p id="message"></p>
+</div>
+
+      <button type="submit">Publier</button>
+    </form>
+  </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBla3D7OS8-Hx82m8Tz6ZPIS7FSLury3ew",
+    authDomain: "cbc-business.firebaseapp.com",
+    projectId: "cbc-business",
+    storageBucket: "cbc-business.appspot.com",
+    messagingSenderId: "295952883135",
+    appId: "1:295952883135:web:4624174a452c1f6aad950a",
+    measurementId: "G-580W4D6J7E"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  const form = document.getElementById('orderForm');
+
+  onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+          alert("Veuillez vous connecter pour publier une annonce."); 
+  window.location.href = "login.html";
+  return;
+}
+    if (user) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Compter les annonces existantes
+     const snapshot = await getDocs(collection(db, 'annonces'));
+        const count = snapshot.size + 1;
+
+        const data = {
+          titre: document.getElementById('title').value.trim(),
+          description: document.getElementById('description').value.trim(),
+          licence: document.getElementById('licence').value,
+          salaire: parseFloat(document.getElementById('salary').value),
+          province: document.getElementById('province').value,
+          ville: document.getElementById('ville').value,
+          
+          count: count,
+          userID: user.uid,
+          date_creation: serverTimestamp(),
+          
+          type: document.getElementById('type').value,
+          etat: "actif",
+          republis: 0,
+          click: 0,
+          urgence: "false",
+          copywriting: "false",
+          connecte: "false",
+          payedBuplish: "true",
+          pdf_url: "pas encore dispo"
+        };
+
+        try {
+          await addDoc(collection(db, "annonces"), data);
+          alert("Annonce publiée avec succès !");
+          form.reset();
+        } catch (err) {
+          alert("Erreur lors de la publication.");
+          console.error(err);
+        }
+      });
+    } else {
+      alert("Veuillez vous connecter pour publier une annonce.");   
+        // Rediriger vers login.html si besoin
+        window.location.href = "login.html";
+    }
+  });
+</script>
+</body>
+</html>

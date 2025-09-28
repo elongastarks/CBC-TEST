@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CBC Business</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #fff;
+      color: #222;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1em 2em;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+    }
+    header h1 {
+      font-size: 1.5em;
+    }
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #111;
+      font-weight: 500;
+    }
+    .btn {
+      background: #1a57d4;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 2em;
+    }
+    .hero-text {
+      flex: 1;
+      max-width: 500px;
+    }
+    .hero-text h2 {
+      font-size: 2em;
+      margin-bottom: 0.3em;
+    }
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 2em;
+    }
+    .feature {
+      flex: 1;
+      min-width: 200px;
+      background: #f8f8f8;
+      padding: 1em;
+      border-radius: 8px;
+    }
+    .comments-section {
+      padding: 2em;
+      background: #fafafa;
+    }
+    .comment {
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+    }
+    .form {
+      margin-top: 2em;
+    }
+    .form input, .form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 1em;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .comment strong { color: #007bff; }
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 2em;
+      background: #f0f0f0;
+      font-size: 0.9em;
+    }
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CBC BUSINESS</h1>
+    <nav>
+      <a href="#">Accueil</a>
+      <a href="#">Abonnements</a>
+      <a href="#">Publier une annonce</a>
+      <a href="#" class="btn">Connexion</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h2>Trouvez l’emploi fait pour vous</h2>
+      <p>La plateforme dédiée aux professionnels du monde des affaires</p>
+      <button class="btn">Commencer</button>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature">
+      <h3>📢 Visibilité accrue</h3>
+      <p>Diffusez des annonces ciblées auprès d’entreprises</p>
+    </div>
+    <div class="feature">
+      <h3>ℹ️ Options en urgence</h3>
+      <p>Mettez en avant vos annonces importantes</p>
+    </div>
+    <div class="feature">
+      <h3>📄 Annonces illimitées</h3>
+      <p>Publiez un nombre illimité d’annonces</p>
+    </div>
+  </section>
+
+  <section class="comments-section">
+    <h2>Commentaires</h2>
+    <div id="comments">
+      <!-- Commentaires Firebase ici -->
+    </div></br>
+    
+    <h2>Laissez-nous un Commentaire</h2>
+    <form id="commentForm" class="form">
+      <input type="text" id="name" placeholder="Votre nom" required />
+      <textarea id="comment" rows="3" placeholder="Votre commentaire" required></textarea>
+      <button type="submit" class="btn">Envoyer</button>
+    </form>
+  </section>
+
+  <footer>
+    <div>
+      <h4>Total Users</h4>
+      <p id="userCount">Chargement...</p>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <p>contact@acbcbusiness.fr<br />+33 1 23 45 67 89</p>
+    </div>
+    <div>
+      <h4>Liens utiles</h4>
+      <p>Mentions légales<br />Politique de confidentialité</p>
+    </div>
+  </footer>
+
+  <!-- Firebase -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBla3D7OS8-Hx82m8Tz6ZPIS7FSLury3ew",
+      authDomain: "cbc-business.firebaseapp.com",
+      projectId: "cbc-business",
+      storageBucket: "cbc-business.firebasestorage.app",
+      messagingSenderId: "295952883135",
+      appId: "1:295952883135:web:4624174a452c1f6aad950a",
+      measurementId: "G-580W4D6J7E"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function getUserCount() {
+      const querySnapshot = await getDocs(collection(db, "users"));
+      document.getElementById("userCount").textContent = querySnapshot.size + " utilisateurs";
+    }
+    getUserCount();
+
+    async function loadComments() {
+      const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
+      const snapshot = await getDocs(q);
+      const commentsDiv = document.getElementById("comments");
+      commentsDiv.innerHTML = "";
+      snapshot.forEach(doc => {
+        const data = doc.data();
+commentsDiv.innerHTML += `
+          <div class="comment">
+            <strong>${data.name}</strong>
+            <p>${data.comment}</p>
+          </div>
+        `;
+      });
+    }
+    loadComments();
+
+    const form = document.getElementById("commentForm");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const comment = document.getElementById("comment").value.trim();
+      if (!name || !comment) return;
+
+      await addDoc(collection(db, "pendingComments"), {
+        name,
+        comment,
+        status: "pending",
+        timestamp: serverTimestamp()
+      });
+
+      alert("Merci ! Votre commentaire est en attente de validation.");
+      form.reset();
+    });
+  </script>
+</body>
+</html>

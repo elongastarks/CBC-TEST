@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 - Page Non Trouvée</title>
+<style>
+/* Reset */
+* { margin:0; padding:0; box-sizing:border-box; }
+body, html { height:100%; font-family:'Segoe UI', sans-serif; background:#87ceeb; overflow:hidden; }
+
+/* Scène */
+.scene { position:relative; width:100%; height:100%; overflow:hidden; }
+
+/* Sol */
+.ground {
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:100px;
+  background:#4CAF50;
+}
+
+/* Obstacles */
+.obstacle {
+  position:absolute;
+  bottom:100px;
+  width:40px;
+  height:40px;
+  background:#654321;
+  border-radius:5px;
+  animation:moveObstacle 5s linear infinite;
+}
+.obstacle:nth-child(1) { left:100%; animation-delay:0s; }
+.obstacle:nth-child(2) { left:200%; animation-delay:2s; }
+
+@keyframes moveObstacle {
+  0% { left:100%; }
+  100% { left:-50px; }
+}
+
+/* Nuages */
+.cloud {
+  position:absolute;
+  width:120px;
+  height:60px;
+  background:white;
+  border-radius:50%;
+  opacity:0.8;
+  animation:cloudMove 60s linear infinite;
+}
+.cloud1 { top:50px; left:-150px; animation-delay:0s; }
+.cloud2 { top:120px; left:-250px; animation-delay:15s; }
+.cloud3 { top:200px; left:-300px; animation-delay:30s; }
+
+@keyframes cloudMove {
+  0% { left:-150px; }
+  100% { left:110%; }
+}
+
+/* Oiseaux */
+.bird {
+  position:absolute;
+  width:20px;
+  height:20px;
+  background:#fff;
+  border-radius:50%;
+  top:80px;
+  animation:fly 10s linear infinite;
+}
+.bird::before, .bird::after {
+  content:"";
+  position:absolute;
+  width:10px; height:2px;
+  background:#fff;
+  top:8px;
+}
+.bird::before { transform:rotate(45deg); left:-5px; }
+.bird::after { transform:rotate(-45deg); left:-5px; }
+
+.bird:nth-child(4) { animation-delay:0s; left:-50px; top:60px; }
+.bird:nth-child(5) { animation-delay:5s; left:-100px; top:150px; }
+
+@keyframes fly { 0% { left:-50px; } 100% { left:110%; } }
+
+/* Personnage */
+.personnage {
+  position:absolute;
+  bottom:100px;
+  left:0;
+  width:40px;
+  height:80px;
+  animation:walk 5s linear infinite, jump 2s ease-in-out infinite;
+}
+
+/* Corps et tête */
+.personnage::before {
+  content:"";
+  position:absolute;
+  bottom:0;
+  left:12px;
+  width:16px;
+  height:50px;
+  background:#333;
+  border-radius:3px;
+}
+.personnage::after {
+  content:"";
+  position:absolute;
+  bottom:50px;
+  left:10px;
+  width:20px;
+  height:20px;
+  background:#ffcc99;
+  border-radius:50%;
+}
+
+/* Jambes */
+.leg-left, .leg-right {
+  position:absolute;
+  bottom:0;
+  width:6px;
+  height:30px;
+  background:#333;
+  border-radius:3px;
+  animation:legs 1s alternate infinite;
+}
+.leg-left { left:10px; }
+.leg-right { left:24px; animation-delay:0.5s; }
+
+@keyframes legs {
+  0% { transform: rotate(20deg); }
+  50% { transform: rotate(-20deg); }
+  100% { transform: rotate(20deg); }
+}
+
+/* Déplacement horizontal du personnage */
+@keyframes walk {
+  0% { left:0; }
+  100% { left:80%; }
+}
+
+/* Saut */
+@keyframes jump {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
+}
+
+/* Texte 404 */
+.text {
+  position:absolute;
+  width:100%;
+  text-align:center;
+  top:30%;
+  color:white;
+}
+.text h1 { font-size:6em; margin-bottom:20px; text-shadow:2px 2px 5px rgba(0,0,0,0.3);}
+.text p { font-size:1.5em; margin-bottom:30px; text-shadow:1px 1px 3px rgba(0,0,0,0.3);}
+.btn {
+  display:inline-block;
+  padding:12px 30px;
+  background:#fff;
+  color:#000;
+  text-decoration:none;
+  font-weight:bold;
+  border-radius:5px;
+  transition:all 0.3s ease;
+}
+.btn:hover { background:#000; color:#fff; transform:scale(1.1); }
+
+</style>
+</head>
+<body>
+<div class="scene">
+
+  <!-- Sol -->
+  <div class="ground"></div>
+
+  <!-- Obstacles -->
+  <div class="obstacle"></div>
+  <div class="obstacle"></div>
+
+  <!-- Nuages -->
+  <div class="cloud cloud1"></div>
+  <div class="cloud cloud2"></div>
+  <div class="cloud cloud3"></div>
+
+  <!-- Oiseaux -->
+  <div class="bird"></div>
+  <div class="bird"></div>
+
+  <!-- Personnage -->
+  <div class="personnage">
+    <div class="leg-left"></div>
+    <div class="leg-right"></div>
+  </div>
+
+  <!-- Texte -->
+  <div class="text">
+    <h1>404</h1>
+    <p>Oups ! Page non trouvée.</p>
+    <a href="index.html" class="btn">Retour à l'accueil</a>
+  </div>
+
+</div>
+</body>
+</html>
