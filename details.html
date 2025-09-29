@@ -3,91 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Détails de l'annonce</title>
+  <title>Détails Annonce</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f8f9fa;
-      color: #333;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 40px auto;
+      font-family: Arial, sans-serif;
       padding: 20px;
-      background: #fff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      border-radius: 8px;
     }
 
-    h1 {
-      text-align: center;
-      color: #007bff;
-      margin-bottom: 30px;
-    }
-
-    .section {
-      margin-bottom: 25px;
-    }
-
-    .section h2 {
-      font-size: 20px;
-      border-bottom: 2px solid #007bff;
-      padding-bottom: 5px;
-      margin-bottom: 15px;
-      color: #007bff;
-    }
-
-    .info {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      row-gap: 10px;
-      column-gap: 20px;
-    }
-
-    .info div {
-      font-size: 15px;
-    }
-
-    .info span {
+    .loading {
+      font-size: 18px;
       font-weight: bold;
-      color: #555;
+      text-align: center;
+      animation: blink 1s infinite;
     }
-@media screen and (max-width: 600px) {
-      .info {
-        grid-template-columns: 1fr;
-      }
 
-      h1 {
-        font-size: 22px;
-      }
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    .details {
+      display: none;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Détails de l'annonce</h1>
-
-    <div class="section">
-      <h2>Informations sur l'annonce</h2>
-      <div class="info" id="annonce-info">
-        <!-- Données JS ici -->
-      </div>
-    </div>
-
-    <div class="section">
-      <h2>Informations sur le propriétaire</h2>
-      <div class="info" id="user-info">
-        <!-- Données JS ici -->
-      </div>
-    </div>
-  </div>
+  <h1>Détails de l'annonce</h1>
+  <div class="loading">Chargement...</div>
+  <div class="details" id="details"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -99,68 +49,56 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth();
-const annonceInfo = document.getElementById("annonce-info");
-    const userInfo = document.getElementById("user-info");
 
-    const params = new URLSearchParams(window.location.search);
-    const annonceID = params.get("id");
+    const loading = document.querySelector(".loading");
+    const detailsDiv = document.getElementById("details");
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        alert("Veuillez vous connecter !");
-        window.location.href = "login.html";
-        return;
-      }
+    // 🔁 Soit lire depuis l’URL :
+  //  const params = new URLSearchParams(window.location.search);
+ //  const annonceID = params.get("id");
 
-      if (!annonceID) {
-        alert("Aucune annonce sélectionnée.");
-        return;
-      }
+    // 🔧 OU TEST Manuel :
+     const annonceID = "TqRUdqzewJB1gPAQXoIh";
 
-      const annonceRef = doc(db, "annonces", annonceID);
-      const annonceSnap = await getDoc(annonceRef);
+    if (!annonceID) {
+      loading.textContent = "ID non trouvé dans l’URL.";
+    } else {
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          alert("Veuillez vous connecter pour voir les détails.");
+          window.location.href = "login.html";
+          return;
+        }
 
-      if (!annonceSnap.exists()) {
-        alert("Annonce introuvable !");
-        return;
-      }
+        try {
+          const docRef = doc(db, "annonces", annonceID);
+          const snap = await getDoc(docRef);
 
-      const annonce = annonceSnap.data();
-      const dateStr = annonce.date_creation?.toDate().toLocaleDateString() || "";
+          if (!snap.exists()) {
 
-      annonceInfo.innerHTML = `
-        <div><span>Titre:</span> ${annonce.titre}</div>
-        <div><span>Description:</span>${annonce.description}</div>
-        <div><span>Type:</span> ${annonce.type}</div>
-        <div><span>Province:</span>${annonce.province}</div>
-        <div><span>Ville:</span> ${annonce.ville}</div>
-        <div><span>Lieu:</span>${annonce.lieu}</div>
-        <div><span>Licence:</span> ${annonce.licence}</div>
-        <div><span>Urgence:</span>${annonce.urgence}</div>
-        <div><span>État:</span> ${annonce.etat}</div>
-        <div><span>Salaire:</span>${annonce.salaire || "Non précisé"}</div>
-        <div><span>Date de création:</span> ${dateStr}</div>
-      `;
+loading.textContent = "Annonce non trouvée.";
+            return;
+          }
 
-      const usersRef = collection(db, "users");
-      const q = query(usersRef, where("userID", "==", annonce.userID));
-      const userSnap = await getDocs(q);
+          const data = snap.data();
 
-      if (!userSnap.empty) 
-        const owner = userSnap.docs[0].data();
-        const dateInscr = owner.date_inscription || "N/A";
+          // 👇 Formatage simple
+          detailsDiv.innerHTML = `
+            <p><strong>Titre: </strong> ${data.titre}</p>
+            <p><strong>Description: </strong>${data.description}</p>
+            <p><strong>Province: </strong> ${data.province}</p>
+            <p><strong>Ville: </strong>${data.ville}</p>
+            <p><strong>Salaire: </strong> ${data.salaire || "Non précisé"}</p>
+          `;
 
-        userInfo.innerHTML = `
-          <div><span>Nom:</span>${owner.name}</div>
-          <div><span>Email:</span> {owner.email}</div>
-          <div><span>Téléphone:</span>${owner.tel}</div>
-          <div><span>Type:</span> ${owner.type}</div>
-          <div><span>Abonnement:</span>${owner.abonnement || "N/A"}</div>
-          <div>Date inscription: <span> </span> ${dateInscr}</div>
-          <div><span>Actif: </span>${owner.active}</div>
-        `;
-      }
-    });
+          loading.style.display = "none";
+          detailsDiv.style.display = "block";
+        } catch (e) {
+          loading.textContent = "Erreur de chargement.";
+          alert("Erreur : " + e.message);
+        }
+      });
+    }
   </script>
 </body>
 </html>
