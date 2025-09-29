@@ -273,7 +273,7 @@ function handleClickBtn(id, annonce, destination) {
     clicks: (annonce.clicks || 0) + 1,
   })
     .then(() => {
-      window.location.href = `details.html?id=${id}`;
+      window.location.href = `commander.html?id=${id}`;
     })
     .catch((e) => {
       console.error(`Erreur en incrémentant le clic (${destination}) :`, e);
