@@ -150,17 +150,24 @@ const statsDiv = document.getElementById('stats');
       if (user) {
         const userID = user.uid;
 
-        // Info Utilisateur
-        const userDoc = await getDoc(doc(db, "users", userID));
-        const userData = userDoc.exists() ? userDoc.data() : {};
-        userDataDiv.innerHTML = `
-          <p><strong>Nom:</strong> ${userData.name || "-"}</p>
-          <p><strong>Email:</strong> ${userData.email || "-"}</p>
-          <p><strong>Téléphone:</strong> ${userData.tel || "-"}</p>
-          <p><strong>Type:</strong> ${userData.type || "-"}</p>
-          <p><strong>Abonnement:</strong> ${userData.abonnement ?? 0}</p>
-          <p><strong>Inscription:</strong> ${userData.date_inscription?.toDate?.().toLocaleDateString() || "-"}</p>
-        `;
+        const uid = user.uid;
+
+    const q = query(collection(db, "users"), where("userID", "==", uid));
+    const snapshot = await getDocs(q);
+
+    let userData = {};
+    if (!snapshot.empty) {
+      userData = snapshot.docs[0].data();
+    }
+
+    userDataDiv.innerHTML = `
+      <p><strong>Nom:</strong> userData.name || "-"</p>
+      <p><strong>Email:</strong>{userData.email || "-"}</p>
+      <p><strong>Téléphone:</strong> userData.tel || "-"</p>
+      <p><strong>Type:</strong>{userData.type || "-"}</p>
+      <p><strong>Abonnement:</strong> ${userData.abonnement ?? 0}</p>
+    <p><strong>Inscription:</strong>{userData.date_inscription?.toDate?.().toLocaleDateString() || "-"}</p>
+    `;
 
         // Statistiques
         const getCount = async (coll) => {
