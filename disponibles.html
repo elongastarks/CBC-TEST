@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Annonces Disponibles</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+   
+    .annonces {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      width: 300px;
+    }
+    .urgence {
+      color: white;
+      background: #1a55d1;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  padding: 10px;
+  background: #f9f9f9;
+}
+
+.filter {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter label {
+  font-size: 13px;
+  margin-bottom: 3px;
+  color: #333;
+}
+.filter select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+    .ttl {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.ttl span {
+  color: #007bff; /* Bleu vif */
+  font-weight: normal;
+  margin-left: 8px;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+}
+    .buttons {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    button {
+      padding: 6px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .details-btn {
+      background-color: #f0f0f0;
+    }
+    .order-btn {
+      background-color: #1a55d1;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Disponibles</h1>
+  <p style="text-align: center;">Découvrez les annonces disponibles pour les professionnels du monde des affaires.</p>
+
+  <div class="filters">
+  <div class="filter">
+    <label>Licence</label>
+    <option value="" disabled selected>License</option>
+    <select id="licence">
+      <option value="anyone">Tous niveaux</option>
+      <option value="diplome">Diplômé</option>
+      <option value="licence">Licencié</option>
+      <option value="master">Master</option>
+    </select>
+  </div>
+  <div class="filter">
+    <label>Type</label>
+    <select id="type">
+      <option value="" disabled selected>catégorie</option>
+      <option value="">Tout</option>
+      <option value="entreprise">Entreprise</option>
+      <option value="individu">Individu</option>
+    </select>
+  </div>
+  <div class="filter">
+    <label>Région</label>
+    <select id="province">
+    <option value="" disabled selected>Province ?</option>
+    <option value="">Partout out</option>
+      <option value="RDC">RDC</option>
+      <option value="Kinshasa">Kinshasa</option>
+<option value="Kongo-Central">Kongo-Central</option>
+<option value="Kwango">Kwango</option>
+<option value="Kwilu">Kwilu</option>
+<option value="Mai-Ndombe">Mai-Ndombe</option>
+<option value="Tshuapa">Tshuapa</option>
+<option value="Mongala">Mongala</option>
+<option value="Nord-Ubangi">Nord-Ubangi</option>
+<option value="Sud-Ubangi">Sud-Ubangi</option>
+<option value="Équateur">Équateur</option>
+<option value="Tshopo">Tshopo</option>
+<option value="Bas-Uele">Bas-Uele</option>
+<option value="Haut-Uele">Haut-Uele</option>
+<option value="Ituri">Ituri</option>
+<option value="Haut-Lomami">Haut-Lomami</option>
+<option value="Lomami">Lomami</option>
+<option value="Kasaï">Kasaï</option>
+<option value="Kasaï-Central">Kasaï-Central</option>
+<option value="Kasaï-Oriental">Kasaï-Oriental</option>
+<option value="Sankuru">Sankuru</option>
+<option value="Maniema">Maniema</option>
+<option value="Sud-Kivu">Sud-Kivu</option>
+<option value="Nord-Kivu">Nord-Kivu</option>
+<option value="Tanganyika">Tanganyika</option>
+<option value="Haut-Katanga">Haut-Katanga</option>
+<option value="Lualaba">Lualaba</option>
+      <!-- Ajoute les autres -->
+    </select>
+  </div>
+  <div class="filter">
+    <label>Ville</label>
+    <select id="ville">
+      <option value="" disabled selected>Ville ?</option>
+       <option value="">Tout</option>
+      <option value="Bandundu">Bandundu</option>
+<option value="Baraka">Baraka</option>
+<option value="Beni">Beni</option>
+<option value="Boende">Boende</option>
+<option value="Boma">Boma</option>
+<option value="Bukavu">Bukavu</option>
+<option value="Bunia">Bunia</option>
+<option value="Buta">Buta</option>
+<option value="Butembo">Butembo</option>
+<option value="Gbadolite">Gbadolite</option>
+<option value="Gemena">Gemena</option>
+<option value="Goma">Goma</option>
+<option value="Inongo">Inongo</option>
+<option value="Isiro">Isiro</option>
+<option value="Kabinda">Kabinda</option>
+<option value="Kalemie">Kalemie</option>
+<option value="Kamina">Kamina</option>
+<option value="Kananga">Kananga</option>
+<option value="Kenge">Kenge</option>
+<option value="Kikwit">Kikwit</option>
+<option value="Kindu">Kindu</option>
+<option value="Kisangani">Kisangani</option>
+<option value="Kinshasa">Kinshasa</option>
+<option value="Kolwezi">Kolwezi</option>
+<option value="Likasi">Likasi</option>
+<option value="Lisala">Lisala</option>
+<option value="Lubumbashi">Lubumbashi</option>
+<option value="Lusambo">Lusambo</option>
+<option value="Matadi">Matadi</option>
+<option value="Mbandaka">Mbandaka</option>
+<option value="Mbujimayi">Mbujimayi</option>
+<option value="Mwene-Ditu">Mwene-Ditu</option>
+<option value="Tshikapa">Tshikapa</option>
+<option value="Uvira">Uvira</option>
+<option value="Zongo">Zongo</option>
+      <!-- Ajoute les autres -->
+    </select>
+  </div>
+  <div class="filter">
+    <label>Etat</label>
+    <select id="etat">
+      <option value="" disabled selected>Etat</option>
+      <option value="">Tout</option>
+      <option value="urgence">En urgence</option>
+      <option value="standard">Strand</option>
+      <!-- Ajoute les autres -->
+    </select>
+  </div>
+</div>
+
+  <p class="ttl">Total Annonces :<span> nombre max des annonces</span></p>
+    
+      <div class="annonces">
+    <div class="card">
+      <h3>rch MANAGER<span class="urgence"> En urgence</span></h3>
+      <p>CBC BUSINESS - entreprise<br>Butembo</p>
+      <p> limite : Nord Kivu / Butembo</br>
+      Publiée le 24 juillet 2025</p>
+      <div class="buttons">
+        <button class="details-btn">Voir plus de détails ↓</button>
+        <button class="order-btn">Commander</button>
+      </div>
+    </div>
+
+    <!-- D'autres annonces similaires ici -->
+
+  </div>
+
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, getDoc, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+  
+  
+  import { where } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBla3D7OS8-Hx82m8Tz6ZPIS7FSLury3ew",
+    authDomain: "cbc-business.firebaseapp.com",
+    projectId: "cbc-business",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  const annoncesContainer = document.querySelector(".annonces");
+  const totalSpan = document.querySelector("span"); // le span après "Total Annonces :"
+
+  const licenceFilter = document.getElementById("licence");
+  const typeFilter = document.getElementById("type");
+  const provinceFilter = document.getElementById("province");
+  const villeFilter = document.getElementById("ville");
+  const etatFilter = document.getElementById("etat");
+  
+async function loadAnnonces() {
+    annoncesContainer.innerHTML = "";
+    let total = 0;
+
+    const q = query(collection(db, "annonces"), orderBy("date_creation", "desc"));
+    const snapshot = await getDocs(q);
+
+// === Fonction générale pour les clics ===
+function handleClickBtn(id, annonce, destination) {
+  const user = auth.currentUser;
+  if (!user) {
+    alert("Veuillez d'abord vous connecter !");
+    window.location.href = "login.html";
+    return;
+  }
+
+  updateDoc(doc(db, "annonces", id), {
+    clicks: (annonce.clicks || 0) + 1,
+  })
+    .then(() => {
+      window.location.href = `destination.html?id={id}`;
+    })
+    .catch((e) => {
+      console.error(`Erreur en incrémentant le clic (${destination}) :`, e);
+    });
+}
+
+    for (const docSnap of snapshot.docs) {
+      const annonce = docSnap.data();
+      const id = docSnap.id;
+
+      if (!passeFiltres(annonce)) continue;
+
+      total++;
+
+      let userName = "Utilisateur inconnu";
+
+try {
+  const usersRef = collection(db, "users");
+  const q = query(usersRef, where("userID", "==", annonce.userID));
+  const querySnap = await getDocs(q);
+
+  if (!querySnap.empty) {
+    const userData = querySnap.docs[0].data();
+    userName = userData.name || userName;
+  }
+} catch (e) {
+  console.warn("Erreur lors de la récupération de l'utilisateur :", e);
+} 
+
+      const card = document.createElement("div");
+      card.className = "card";
+      const urgenceText = annonce.urgence === "true" ? "En urgence" : "Standard";
+      const dateStr = annonce.date_creation?.toDate().toLocaleDateString() || "";
+      const lieu = annonce.lieu || "";
+
+      card.innerHTML = `
+        <h3>${annonce.titre} <span class="urgence">${urgenceText}</span></h3>
+        <p><strong>${userName}</strong> - (${annonce.type})<br>depuis ${lieu}</p>
+        <p>Limite : ${annonce.province} / ${annonce.ville}<br>
+        Publiée le ${dateStr}</p>
+        <div class="buttons">
+<button class="details-btn" data-id="${id}">Voir plus de détails ↓</button>
+          <button class="order-btn" data-id="${id}">Commander</button>
+        </div>
+      `;
+      annoncesContainer.appendChild(card);
+
+      // === À mettre après création de chaque card ===
+card.querySelector(".details-btn").onclick = () => handleClickBtn(id, annonce, "details");
+card.querySelector(".order-btn").onclick = () => handleClickBtn(id, annonce, "commander");
+
+
+      
+    }
+
+    totalSpan.textContent = total;
+  }
+
+  function passeFiltres(annonce) {
+    if (licenceFilter.value !== "anyone" && annonce.licence !== licenceFilter.value) return false;
+    if (typeFilter.value && annonce.type !== typeFilter.value) return false;
+    if (provinceFilter.value && annonce.province !== provinceFilter.value) return false;
+    if (villeFilter.value && annonce.ville !== villeFilter.value) return false;
+    if (etatFilter.value) {
+      const urgence = annonce.urgence === "true" ? "urgence" : "standard";
+      if (etatFilter.value !== urgence) return false;
+    }
+    return true;
+  }
+
+  // Relancer à chaque changement de filtre
+  [licenceFilter, typeFilter, provinceFilter, villeFilter, etatFilter].forEach(el =>
+    el.addEventListener("change", loadAnnonces)
+  );
+
+  // Lancer au chargement
+  loadAnnonces();
+</script>
+</body>
+</html>
