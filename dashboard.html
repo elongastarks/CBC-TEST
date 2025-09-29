@@ -161,10 +161,10 @@ const statsDiv = document.getElementById('stats');
     }
 
     userDataDiv.innerHTML = `
-      <p><strong>Nom:</strong> userData.name || "-"</p>
-      <p><strong>Email:</strong>{userData.email || "-"}</p>
-      <p><strong>Téléphone:</strong> userData.tel || "-"</p>
-      <p><strong>Type:</strong>{userData.type || "-"}</p>
+      <p><strong>Nom:</strong> ${userData.name || "-"}</p>
+      <p><strong>Email:</strong>${userData.email || "-"}</p>
+      <p><strong>Téléphone:</strong> ${userData.tel || "-"}</p>
+      <p><strong>Type:</strong>${userData.type || "-"}</p>
       <p><strong>Abonnement:</strong> ${userData.abonnement ?? 0}</p>
     <p><strong>Inscription:</strong>{userData.date_inscription?.toDate?.().toLocaleDateString() || "-"}</p>
     `;
