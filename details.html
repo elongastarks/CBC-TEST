@@ -54,11 +54,11 @@ import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12
     const detailsDiv = document.getElementById("details");
 
     // 🔁 Soit lire depuis l’URL :
-  //  const params = new URLSearchParams(window.location.search);
- //  const annonceID = params.get("id");
+    const params = new URLSearchParams(window.location.search);
+    const annonceID = params.get("id");
 
     // 🔧 OU TEST Manuel :
-     const annonceID = "TqRUdqzewJB1gPAQXoIh";
+   //  const annonceID = "TqRUdqzewJB1gPAQXoIh";
 
     if (!annonceID) {
       loading.textContent = "ID non trouvé dans l’URL.";
