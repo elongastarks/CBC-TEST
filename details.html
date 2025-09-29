@@ -1,104 +1,124 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Détails Annonce</title>
+  <meta charset="UTF-8">
+  <title>Détails de l'annonce</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
       padding: 20px;
     }
 
     .loading {
       font-size: 18px;
-      font-weight: bold;
       text-align: center;
-      animation: blink 1s infinite;
+      padding: 20px;
+      animation: blink 1.5s infinite;
     }
 
     @keyframes blink {
-      0% { opacity: 1; }
+      0%, 100% { opacity: 1; }
       50% { opacity: 0.3; }
-      100% { opacity: 1; }
     }
 
-    .details {
-      display: none;
+    .annonce-details {
+      background: #fff;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+
+    .annonce-details h2, h3 {
       margin-top: 20px;
+      color: #222;
+    }
+
+    .annonce-details p {
+      margin: 6px 0;
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
-  <h1>Détails de l'annonce</h1>
+
   <div class="loading">Chargement...</div>
-  <div class="details" id="details"></div>
+  <div class="details" style="display: none;"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBla3D7OS8-Hx82m8Tz6ZPIS7FSLury3ew",
       authDomain: "cbc-business.firebaseapp.com",
-      projectId: "cbc-business"
+      projectId: "cbc-business",
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth();
 
-    const loading = document.querySelector(".loading");
-    const detailsDiv = document.getElementById("details");
-
-    // 🔁 Soit lire depuis l’URL :
     const params = new URLSearchParams(window.location.search);
     const annonceID = params.get("id");
 
-    // 🔧 OU TEST Manuel :
-   //  const annonceID = "TqRUdqzewJB1gPAQXoIh";
+    const loadingDiv = document.querySelector(".loading");
+    const detailsDiv = document.querySelector(".details");
 
-    if (!annonceID) {
-      loading.textContent = "ID non trouvé dans l’URL.";
-    } else {
-      onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-          alert("Veuillez vous connecter pour voir les détails.");
-          window.location.href = "login.html";
-          return;
-        }
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        alert("Veuillez vous connecter pour voir les détails.");
+        window.location.href = "login.html";
+        return;
+      }
 
-        try {
-          const docRef = doc(db, "annonces", annonceID);
-          const snap = await getDoc(docRef);
+      try {
+        const annonceSnap = await getDoc(doc(db, "annonces", annonceID));
+        if (!annonceSnap.exists()) throw new Error("Annonce introuvable");
+        const annonce = annonceSnap.data();
 
-          if (!snap.exists()) {
+        const userQ = query(collection(db, "users"), where("userID", "==", annonce.userID));
+const userSnap = await getDocs(userQ);
+        const userInfos = userSnap.empty ? {} : userSnap.docs[0].data();
 
-loading.textContent = "Annonce non trouvée.";
-            return;
-          }
+        detailsDiv.innerHTML = `
+          <div class="annonce-details">
+            <h2>${annonce.titre}</h2>
+            <p><strong>Description : </strong>${annonce.description || "—"}</p>
+            <p><strong>Date : </strong> ${annonce.date_creation?.toDate().toLocaleDateString() || "—"}</p>
+            <p><strong>Limite : Province / Ville : </strong>${annonce.province} / ${annonce.ville}</p>
+            <p><strong>Lieu : </strong>${annonce.lieu || "—"}</p>
+            <p><strong>Licence : </strong> ${annonce.licence}</p>
+            <p><strong>Type : </strong>${annonce.type}</p>
+            <p><strong>État : </strong> ${annonce.etat || "—"}</p>
+            <p><strong>Urgence : </strong>${annonce.urgence === "true" ? "Oui" : "Non"}</p>
+            <p><strong>Salaire : </strong> ${annonce.salaire || "Non précisé"}</p>
 
-          const data = snap.data();
+            <hr>
 
-          // 👇 Formatage simple
-          detailsDiv.innerHTML = `
-            <p><strong>Titre: </strong> ${data.titre}</p>
-            <p><strong>Description: </strong>${data.description}</p>
-            <p><strong>Province: </strong> ${data.province}</p>
-            <p><strong>Ville: </strong>${data.ville}</p>
-            <p><strong>Salaire: </strong> ${data.salaire || "Non précisé"}</p>
-          `;
+            <h3>Informations du posteur</h3>
+            <p><strong>Nom : </strong>${userInfos.name || "—"}</p>
+            <p><strong>Email : </strong> ${userInfos.email || "—"}</p>
+            <p><strong>Téléphone : </strong>${userInfos.tel || "—"}</p>
+            <p><strong>Type de compte : </strong> ${userInfos.type || "—"}</p>
+<p><strong>Abonnement :</strong>${userInfos.abonnement || "—"}</p>
+            <p><strong>Compte actif : </strong> ${userInfos.active ? "Oui" : "Non"}</p>
+            <p><strong>Inscription : </strong>${userInfos.date_inscription?.toDate().toLocaleDateString() || "—"}</p>
+          </div>
+        `;
 
-          loading.style.display = "none";
-          detailsDiv.style.display = "block";
-        } catch (e) {
-          loading.textContent = "Erreur de chargement.";
-          alert("Erreur : " + e.message);
-        }
-      });
-    }
+        loadingDiv.style.display = "none";
+        detailsDiv.style.display = "block";
+
+      } catch (e) {
+        loadingDiv.textContent = "Erreur de chargement : " + e.message;
+      }
+    });
   </script>
+
 </body>
 </html>
