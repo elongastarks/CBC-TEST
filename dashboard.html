@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -190,14 +189,14 @@ const statsDiv = document.getElementById('stats');
         const clicks = await getAnnonceClicks();
 
         statsDiv.innerHTML = `
-          <p><strong>Free Annonces:</strong> freeCount</p>
-          <p><strong>Urgences:</strong>{urgCount}</p>
-          <p><strong>Abonnements annuels:</strong> annualCount</p>
-          <p><strong>Copywriting:</strong>{copyCount}</p>
-          <p><strong>Rendus:</strong> renduCount</p>
-          <p><strong>Publications:</strong>{annonces}</p>
+          <p><strong>Free Annonces:</strong> ${freeCount}</p>
+          <p><strong>Urgences:</strong>${urgCount}</p>
+          <p><strong>Abonnements annuels:</strong> ${annualCount}</p>
+          <p><strong>Copywriting:</strong>${copyCount}</p>
+          <p><strong>Rendus:</strong> ${renduCount}</p>
+          <p><strong>Publications:</strong>${annonces}</p>
           <p><strong>Total clics sur vos annonces:</strong> ${clicks}</p>
-<p><strong>Transactions / Paiements:</strong>{paymentCount}</p>
+<p><strong>Transactions / Paiements:</strong>${paymentCount}</p>
         `;
       } else {
         window.location.href = "login.html";
