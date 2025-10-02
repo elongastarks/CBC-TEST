@@ -1,15 +1,3 @@
-Voici une *page complète HTML + CSS + JS* qui :
-
-✅ S'affiche quand *l'utilisateur est hors ligne*  
-✅ Affiche un petit message animé  
-✅ *Attend le retour de la connexion*  
-✅ Puis *redirige automatiquement vers la dernière page visitée* (ou une page de secours comme `index.html`)
-
----
-
-✅ `offline.html`
-
-```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -94,18 +82,3 @@ Voici une *page complète HTML + CSS + JS* qui :
   </script>
 </body>
 </html>
-```
-
----
-
-À mettre sur *chaque page* de ton site :
-
-```html
-<script>
-  sessionStorage.setItem("lastVisitedPage", window.location.href);
-</script>
-```
-
----
-
-Souhaites-tu aussi que je t’ajoute un *service worker* pour gérer le mode offline plus proprement ?
