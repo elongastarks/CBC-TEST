@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Free Annonces</title>
+</head>
+<body>
+  <h1>Test Annonces Gratuites</h1>
+  <div class="total-free">Total : 0</div>
+  <div class="annonces-container" id="annoncesContainer"></div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBla3D7OS8-Hx82m8Tz6ZPIS7FSLury3ew",
+    authDomain: "cbc-business.firebaseapp.com",
+    projectId: "cbc-business",
+    storageBucket: "cbc-business.appspot.com",
+    messagingSenderId: "295952883135",
+    appId: "1:295952883135:web:4624174a452c1f6aad950a",
+    measurementId: "G-580W4D6J7E"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      alert("Utilisateur non connecté !");
+      window.location.href = "login.html";
+      return;
+    }
+
+    try {
+        const querySnapshot = await getDocs(collection(db, "freeAnnoces"));
+      let total = 0;
+      const container = document.getElementById("annoncesContainer");
+      const totalDiv = document.querySelector(".total-free");
+
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const dateCreation = data.date_creation?.toDate().toLocaleString() || "";
+        const expiration = data.expiration?.toDate().toLocaleString() || "";
+
+        const card = document.createElement("div");
+        card.className = "annonce";
+        card.innerHTML = `
+          <h3> ${data.titre || ""}</h3>
+          <p><strong>Description:</strong> ${data.description || ""}</p>
+          <p><strong>Date création:</strong> dateCreation</p>
+          <p><strong>Expiration:</strong> ${expiration}</p>
+        `;
+        container.appendChild(card);
+        total++;
+      });
+ 
+      totalDiv.textContent = `Total : ${total}`;
+    } catch (err) {
+      alert("Erreur getDocs : " + err.message);
+    }
+  });
+</script>
+</body>
+</html>
