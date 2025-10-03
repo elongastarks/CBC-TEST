@@ -85,8 +85,10 @@
         card.className = "annonce";
         card.innerHTML = `
           <h3> ${data.titre || ""}</h3>
+          <b> ${data.name || ""}</b>
+          <b> ${data.contacts || ""}</b>
           <p><strong>Description:</strong> ${data.description || ""}</p>
-          <p><strong>Date création:</strong> dateCreation</p>
+          <p><strong>Date création:</strong> ${dateCreation}</p>
           <p><strong>Expiration:</strong> ${expiration}</p>
         `;
         container.appendChild(card);
