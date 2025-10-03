@@ -50,7 +50,7 @@ const app = initializeApp(firebaseConfig);
           if (expiration && expiration < now) {
             await deleteDoc(doc(db, "freeAnnoces", docSnap.id));
             supprimées++;
-            messages.push(`❌ Supprimé : <strong>data.titre || "Sans titre"</strong> (expirée le ${expiration.toLocaleString()})`);
+            messages.push(`❌ Supprimé : <strong>${data.titre || "Sans titre"}</strong> (expirée le ${expiration.toLocaleString()})`);
           } else {
             valides++;
           }
