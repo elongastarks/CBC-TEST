@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Suppression automatique</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .expired { color: red; margin-bottom: 10px; }
+    .success { color: green; }
+  </style>
+</head>
+<body>
+  <h2>🧹 Suppression automatique des annonces expirées</h2>
+  <div id="resultat">Chargement...</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBla3D7OS8-Hx82m8Tz6ZPIS7FSLury3ew",
+      authDomain: "cbc-business.firebaseapp.com",
+      projectId: "cbc-business",
+      storageBucket: "cbc-business.appspot.com",
+      messagingSenderId: "295952883135",
+      appId: "1:295952883135:web:4624174a452c1f6aad950a",
+      measurementId: "G-580W4D6J7E"
+    };
+const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const resultDiv = document.getElementById("resultat");
+
+    async function supprimerAnnoncesExpirées() {
+      try {
+        const now = new Date();
+        const annoncesRef = collection(db, "freeAnnoces");
+        const snap = await getDocs(annoncesRef);
+
+        let total = 0;
+        let supprimées = 0;
+        let valides = 0;
+        let messages = [];
+
+        for (const docSnap of snap.docs) {
+          total++;
+          const data = docSnap.data();
+          const expiration = data.expiration?.toDate?.();
+
+          if (expiration && expiration < now) {
+            await deleteDoc(doc(db, "freeAnnoces", docSnap.id));
+            supprimées++;
+            messages.push(`❌ Supprimé : <strong>data.titre || "Sans titre"</strong> (expirée le ${expiration.toLocaleString()})`);
+          } else {
+            valides++;
+          }
+        }
+
+        resultDiv.innerHTML = `
+          <p class="success">✅ Total scanné : ${total}</p>
+          <p class="success">🟢 Encore valides : ${valides}</p>
+          <p class="expired">❌ Supprimées : supprimées</p>
+          <hr> ${messages.join("<br>")}
+        `;
+
+      } catch (err) {
+        console.error("Erreur suppression :", err);
+resultDiv.textContent = "❌ Erreur lors de la suppression.";
+      }
+    }
+
+    supprimerAnnoncesExpirées();
+  </script>
+</body>
+</html>
