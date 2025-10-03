@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Publier Annonce Gratuite</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .message {
+      margin-top: 15px;
+      text-align: center;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+  <h1>Publier Annonce Gratuite</h1>
+    <form id="freeForm">
+      <label for="titre">Titre *</label>
+      <input type="text" id="titre" name="titre" required />
+
+      <label for="description">Description *</label>
+      <textarea id="description" name="description" required></textarea>
+
+      <label for="name">Nom (propriétaire) *</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="contacts">Contacts *</label>
+      <input type="text" id="contacts" name="contacts" required />
+
+      <button type="submit">Publier</button>
+    </form>
+    <div class="message" id="msg"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      addDoc,
+      updateDoc,
+      doc,
+      query,
+      where,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBla3D7OS8-Hx82m8Tz6ZPIS7FSLury3ew",
+      authDomain: "cbc-business.firebaseapp.com",
+      projectId: "cbc-business",
+  storageBucket: "cbc-business.appspot.com",
+      messagingSenderId: "295952883135",
+      appId: "1:295952883135:web:4624174a452c1f6aad950a"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("freeForm");
+    const msgEl = document.getElementById("msg");
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+      // on peut peut‑être pré‑charger données utilisateur ici
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msgEl.style.color = "red";
+      msgEl.textContent = "";
+
+      const user = auth.currentUser;
+      if (!user) {
+        msgEl.textContent = "Vous devez être connecté.";
+        return;
+      }
+
+      const uid = user.uid;
+      const titre = form.titre.value.trim();
+      const description = form.description.value.trim();
+      const name = form.name.value.trim();
+      const contacts = form.contacts.value.trim();
+
+      if (!titre || !description || !name || !contacts) {
+        msgEl.textContent = "Tous les champs sont obligatoires.";
+        return;
+      }
+
+      try {
+        // Vérifier nPublish
+  const usersRef = collection(db, "users");
+        const q = query(usersRef, where("userID", "==", uid));
+        const userSnap = await getDocs(q);
+
+        let userDoc = null;
+        if (!userSnap.empty) userDoc = userSnap.docs[0];
+
+        let nPublish = 0;
+        if (userDoc && userDoc.data().nPublish != null) {
+          nPublish = userDoc.data().nPublish;
+        }
+
+        if (nPublish >= 3) {
+          msgEl.textContent = "Vous avez atteint le maximum de publications gratuites.";
+          return;
+        }
+
+        // Préparer freeAnnoces
+        const freeRef = collection(db, "freeAnnoces");
+
+        // Calculer expiration = 5 jours après maintenant
+        const now = new Date();
+        const expDate = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
+
+        // Count automatique (nombre actuel +1)
+        const freeSnap = await getDocs(freeRef);
+        const count = freeSnap.size + 1;
+
+        // Créer annonce
+        await addDoc(freeRef, {
+          count,
+          titre,
+          description,
+          name,
+          contacts,
+          userID: uid,
+          date_creation: serverTimestamp(),
+          expiration: expDate,
+        });
+
+        // Mettre à jour nPublish dans users
+        if (userDoc) {
+  await updateDoc(doc(db, "users", userDoc.id), {
+            nPublish: nPublish + 1
+          });
+        } else {
+          // si pas de doc users, créer ? ou ignorer
+        }
+
+        msgEl.style.color = "green";
+        msgEl.textContent = "Annonce gratuite publiée avec succès !";
+        form.reset();
+      } catch (err) {
+        console.error("Erreur publication free :", err);
+        msgEl.textContent = "Erreur lors de la publication.";
+      }
+    });
+  </script>
+</body>
+</html>
