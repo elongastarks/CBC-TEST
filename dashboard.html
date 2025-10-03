@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CBC Business - Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: #f8f8f8;
+      color: #333;
+    }
+
+    header {
+      background-color: #1e1e1e;
+      color: #fff;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    button.logout {
+      background: transparent;
+      border: 1px solid #fff;
+      color: #fff;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .profile-section {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .profile-section img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+    }
+
+    .profile-section input {
+      width: 300px;
+      max-width: 90%;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-section button {
+      padding: 0.5rem 1rem;
+      background: #333;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dashboard {
+      max-width: 1000px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    @media (max-width: 600px) {
+      .profile-section input {
+        width: 100%;
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>CBC Bussiness - Dashboard</h1>
+    <button class="logout">Déconnexion</button>
+  </header>
+
+  <section class="profile-section">
+    <img id="profilePic" src="https://picsum.photos/id/1015/400/600" alt="Photo de profil" />
+    <br/>
+    <input type="text" id="photoURL" placeholder="https://example.com/photo.jpg" />
+    <br/>
+    <button id="updatePhoto">Mettre à jour</button>
+  </section>
+
+  <div class="dashboard">
+
+    <div class="card" id="userCard">
+      <h3>Tableau de bord</h3>
+        <p><strong>Nom :</strong> <span id="userName">...</span></p>
+      <p><strong>Email :</strong> <span id="userEmail">...</span></p>
+      <p><strong>Type :</strong> <span id="userType">...</span></p>
+      <p><strong>Téléphone :</strong> <span id="userTel">...</span></p>
+      <p><strong>Date d’inscription :</strong> <span id="userDate">...</span></p>
+      <p><strong>Statut :</strong> <span id="userActive">...</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Abonnement annuel</h3>
+      <p><strong>Activé le :</strong> <span id="annualStart">-</span></p>
+      <p><strong>Expire le :</strong> <span id="annualEnd">-</span></p>
+      <button id="upgradeBtn" style="display: none;">Upgrade</button>
+    </div>
+
+    <div class="card">
+      <h3>Annonces urgentes</h3>
+      <p>Du : <span id="urgenceStart">-</span></p>
+      <p>Au : <span id="urgenceEnd">-</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Copywriting</h3>
+      <p>Total : <span id="copyTotal">0</span></p>
+      <p>Envoyés : <span id="copySend">0</span></p>
+      <p>Type : <span id="copyType">-</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Free annonces</h3>
+      <p>Publiées : <span id="freeCount">0</span></p>
+      <p>Payantes : <span id="freePaid">0</span></p>
+<p>Total clics : <span id="freeClicks">0</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Analytics</h3>
+      <p>Publiées : <span id="annonceCount">0</span></p>
+      <p>Total clics : <span id="totalClicks">0</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Payments</h3>
+      <p>Pour : <span id="paymentFor">-</span></p>
+      <p>Montant : <span id="paymentAmount">-</span></p>
+      <p>Date : <span id="paymentDate">-</span></p>
+      <p>Expiration : <span id="paymentExp">-</span></p>
+    </div>
+
+    <div class="card" style="grid-column: 1 / -1;">
+      <h3>Annonces</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Titre</th>
+            <th>Création</th>
+            <th>Vues</th>
+            <th>Clicks</th>
+            <th>Expiration</th>
+          </tr>
+        </thead>
+        <tbody id="annonceTable">
+          <tr><td colspan="5">Aucune annonce</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+  import { getStorage } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBla3D7OS8-Hx82m8Tz6ZPIS7FSLury3ew",
+    authDomain: "cbc-business.firebaseapp.com",
+    projectId: "cbc-business",
+    storageBucket: "cbc-business.appspot.com", // ✅ corrigé ici
+    messagingSenderId: "295952883135",
+    appId: "1:295952883135:web:4624174a452c1f6aad950a",
+    measurementId: "G-580W4D6J7E"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  // === ELEMENTS DOM ===
+  const profilePic = document.getElementById('profilePic');
+  const photoURLInput = document.getElementById('photoURL');
+  const updatePhotoBtn = document.getElementById('updatePhoto');
+  const logoutBtn = document.querySelector('.logout');
+const upgradeBtn = document.getElementById('upgradeBtn');
+
+  // User info elements
+  const userNameEl = document.getElementById('userName');
+  const userEmailEl = document.getElementById('userEmail');
+  const userTypeEl = document.getElementById('userType');
+  const userTelEl = document.getElementById('userTel');
+  const userDateEl = document.getElementById('userDate');
+  const userActiveEl = document.getElementById('userActive');
+
+  // Annual subscription
+  const annualStartEl = document.getElementById('annualStart');
+  const annualEndEl = document.getElementById('annualEnd');
+
+  // Urgences
+  const urgenceStartEl = document.getElementById('urgenceStart');
+  const urgenceEndEl = document.getElementById('urgenceEnd');
+
+  // Copywriting
+  const copyTotalEl = document.getElementById('copyTotal');
+  const copySendEl = document.getElementById('copySend');
+  const copyTypeEl = document.getElementById('copyType');
+
+  // Free annonces
+  const freeCountEl = document.getElementById('freeCount');
+  const freePaidEl = document.getElementById('freePaid');
+  const freeClicksEl = document.getElementById('freeClicks');
+
+  // Analytics
+  const annonceCountEl = document.getElementById('annonceCount');
+  const totalClicksEl = document.getElementById('totalClicks');
+
+  // Payments
+const paymentForEl = document.getElementById('paymentFor');
+  const paymentAmountEl = document.getElementById('paymentAmount');
+  const paymentDateEl = document.getElementById('paymentDate');
+  const paymentExpEl = document.getElementById('paymentExp');
+
+  // Annonces Table
+  const annonceTableBody = document.getElementById('annonceTable');
+
+  // Utilitaires
+  function formatDate(timestamp) {
+    if (!timestamp) return '-';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  // Mise à jour de la photo de profil en direct
+  photoURLInput.addEventListener('input', () => {
+    profilePic.src = photoURLInput.value || 'https://via.placeholder.com/120';
+  });
+
+  // Mettre à jour la photo dans Firestore users collection
+  updatePhotoBtn.addEventListener('click', async () => {
+    const url = photoURLInput.value.trim();
+    if (!url) return alert('Veuillez entrer une URL valide');
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error('Utilisateur non connecté');
+      // Mise à jour dans users collection
+      const userRef = db.collection('users').doc(user.uid);
+      await userRef.update({ photoURL: url });
+alert('Photo de profil mise à jour');
+    } catch (err) {
+      alert('Erreur: ' + err.message);
+    }
+  });
+
+  // Logout
+  logoutBtn.addEventListener('click', () => {
+    auth.signOut();
+  });
+
+  // Affiche le bouton upgrade si abonnement == 0
+  upgradeBtn.addEventListener('click', () => {
+    alert('Redirection vers la page d\'upgrade...');
+    // Ici tu peux mettre la redirection vers la page d’abonnement
+    window.location.href = 'upgrade.html';
+  });
+
+  // Charger les données du dashboard
+  async function loadDashboard(user) {
+    const uid = user.uid;
+
+    // Charger user data
+    const userDoc = await db.collection('users').doc(uid).get();
+    if (!userDoc.exists) {
+      alert('Données utilisateur introuvables');
+      return;
+    }
+    const userData = userDoc.data();
+
+    // Affiche infos user
+    userNameEl.textContent = userData.name || 'Non disponible';
+    userEmailEl.textContent = userData.email || 'Non disponible';
+    userTypeEl.textContent = userData.type || 'Non disponible';
+    userTelEl.textContent = userData.tel || 'Non disponible';
+    userDateEl.textContent = formatDate(userData.date_inscription) || '-';
+    userActiveEl.textContent = userData.active === 'true' ? 'Actif' : 'Inactif';
+
+    // Photo profil
+    if (userData.photoURL) {
+    profilePic.src = userData.photoURL;
+      photoURLInput.value = userData.photoURL;
+    }
+
+    // Abonnement annuel
+    const annualDoc = await db.collection('annual').doc(uid).get();
+    if (annualDoc.exists) {
+      const annualData = annualDoc.data();
+      annualStartEl.textContent = formatDate(annualData.creation);
+      annualEndEl.textContent = formatDate(annualData.exprireAt);
+      if (annualData.hasAnnual) upgradeBtn.style.display = 'none';
+      else upgradeBtn.style.display = 'inline-block';
+    } else {
+      annualStartEl.textContent = '-';
+      annualEndEl.textContent = '-';
+      upgradeBtn.style.display = 'inline-block';
+    }
+
+    // Annonces urgentes actives
+    const urgencesQuery = await db.collection('urgences')
+      .where('userID', '==', uid)
+      .where('end_date', '>', new Date())
+      .get();
+    if (!urgencesQuery.empty) {
+      const urgence = urgencesQuery.docs[0].data();
+      urgenceStartEl.textContent = formatDate(urgence.start_date);
+      urgenceEndEl.textContent = formatDate(urgence.end_date);
+    } else {
+      urgenceStartEl.textContent = '-';
+      urgenceEndEl.textContent = '-';
+    }
+
+    // Copywriting
+    const copyQuery = await db.collection('copywriting')
+      .where('userID', '==', uid)
+      .get();
+    if (!copyQuery.empty) {
+      let totalCount = 0, totalSent = 0, type = '-';
+      copyQuery.forEach(doc => {
+        const d = doc.data();
+        totalCount += d.count || 0;
+        totalSent += d.send || 0;
+        type = d.type || type;
+      });
+      copyTotalEl.textContent = totalCount;
+      copySendEl.textContent = totalSent;
+      copyTypeEl.textContent = type;
+    } else {
+      copyTotalEl.textContent = '0';
+      copySendEl.textContent = '0';
+      copyTypeEl.textContent = '-';
+    }
+
+    // Free annonces
+    const freeQuery = await db.collection('freeAnnoces').where('userID', '==', uid).get();
+    let freeCount = 0;
+    let freePaid = 0;
+    let freeClicks = 0;
+    freeQuery.forEach(doc => {
+      freeCount++;
+      // freePaid n’est pas dans freeAnnoces, donc 0 ici
+    });
+    freeCountEl.textContent = freeCount;
+    freePaidEl.textContent = freePaid;
+    freeClicksEl.textContent = freeClicks;
+
+    // Annonces classiques
+    const annoncesQuery = await db.collection('annonces').where('userID', '==', uid).get();
+    let annonceCount = 0;
+    let totalClicks = 0;
+    let annoncesRows = '';
+
+    if (!annoncesQuery.empty) {
+      annonceCount = annoncesQuery.size;
+      annoncesQuery.forEach(doc => {
+        const a = doc.data();
+        totalClicks += a.clicks || 0;
+        annoncesRows += `<tr>
+          <td>a.titre || '-'</td>
+          <td>{formatDate(a.date_creation)}</td>
+          <td>a.republis || 0</td>
+          <td>{a.clicks || 0}</td>
+          <td>${formatDate(a.expiration)}</td>
+        </tr>`;
+      });
+    } else {
+      annoncesRows = '<tr><td colspan="5">Aucune annonce</td></tr>';
+    }
+
+    annonceCountEl.textContent = annonceCount;
+    totalClicksEl.textContent = totalClicks;
+    annonceTableBody.innerHTML = annoncesRows;
+
+    // Payments
+    const paymentsQuery = await db.collection('payments')
+      .where('userId', '==', uid)
+      .orderBy('timestamp', 'desc')
+      .limit(1)
+      .get();
+    if (!paymentsQuery.empty) {
+      const p = paymentsQuery.docs[0].data();
+      paymentForEl.textContent = p.paymentFor || '-';
+      paymentAmountEl.textContent = p.amount || '-';
+      paymentDateEl.textContent = formatDate(p.timestamp);
+      paymentExpEl.textContent = formatDate(p.expiration);
+    } else {
+      paymentForEl.textContent = '-';
+      paymentAmountEl.textContent = '-';
+      paymentDateEl.textContent = '-';
+      paymentExpEl.textContent = '-';
+    }
+  }
+
+  // Auth state observer
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      loadDashboard(user);
+    } else {
+    window.location.href = 'login.html';
+    }
+  });
+</script>
+</body>
+</html>
+
