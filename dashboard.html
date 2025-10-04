@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CBC Business - Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: #f8f8f8;
+      color: #333;
+    }
+
+    header {
+      background-color: #1e1e1e;
+      color: #fff;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    button.logout {
+      background: transparent;
+      border: 1px solid #fff;
+      color: #fff;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .profile-section {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .profile-section img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+    }
+
+    .profile-section input {
+      width: 300px;
+      max-width: 90%;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-section button {
+      padding: 0.5rem 1rem;
+      background: #333;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dashboard {
+      max-width: 1000px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    @media (max-width: 600px) {
+      .profile-section input {
+        width: 100%;
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>CBC Bussiness - Dashboard</h1>
+    <button class="logout">Déconnexion</button>
+  </header>
+
+  <section class="profile-section">
+    <img id="profilePic" src="https://picsum.photos/id/1015/400/600" alt="Photo de profil" />
+    <br/>
+    <input type="text" id="photoURL" placeholder="https://example.com/photo.jpg" />
+    <br/>
+    <button id="updatePhoto">Mettre à jour</button>
+  </section>
+
+  <div class="dashboard">
+
+    <div class="card" id="userCard">
+      <h3>Tableau de bord</h3>
+        <p><strong>Nom :</strong> <span id="userName">...</span></p>
+      <p><strong>Email :</strong> <span id="userEmail">...</span></p>
+      <p><strong>Type :</strong> <span id="userType">...</span></p>
+      <p><strong>Téléphone :</strong> <span id="userTel">...</span></p>
+      <p><strong>Date d’inscription :</strong> <span id="userDate">...</span></p>
+      <p><strong>Statut :</strong> <span id="userActive">...</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Abonnement annuel</h3>
+      <p><strong>Activé le :</strong> <span id="annualStart">-</span></p>
+      <p><strong>Expire le :</strong> <span id="annualEnd">-</span></p>
+      <button id="upgradeBtn" style="display: none;">Upgrade</button>
+    </div>
+
+    <div class="card">
+      <h3>Annonces urgentes</h3>
+      <p>Du : <span id="urgenceStart">-</span></p>
+      <p>Au : <span id="urgenceEnd">-</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Copywriting</h3>
+      <p>Total : <span id="copyTotal">0</span></p>
+      <p>Envoyés : <span id="copySend">0</span></p>
+      <p>Type : <span id="copyType">-</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Free annonces</h3>
+      <p>Publiées : <span id="freeCount">0</span></p>
+      <p>Payantes : <span id="freePaid">0</span></p>
+<p>Total clics : <span id="freeClicks">0</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Analytics</h3>
+      <p>Publiées : <span id="annonceCount">0</span></p>
+      <p>Total clics : <span id="totalClicks">0</span></p>
+    </div>
+    
+    <!-- ✅ Commands -->
+<div class="card">
+  <h3>Commandes</h3>
+  <p>Total : <span id="commandTotal">0</span></p>
+  <p>Dernière : <span id="commandLast">-</span></p>
+</div>
+
+<!-- ✅ Rendus -->
+<div class="card">
+  <h3>Rendus</h3>
+  <p>Total : <span id="renduTotal">0</span></p>
+  <p>Dernier : <span id="renduLast">-</span></p>
+</div>
+
+    <div class="card">
+      <h3>Payments</h3>
+      <p>Pour : <span id="paymentFor">-</span></p>
+      <p>Montant : <span id="paymentAmount">-</span></p>
+      <p>Date : <span id="paymentDate">-</span></p>
+      <p>Expiration : <span id="paymentExp">-</span></p>
+    </div>
+
+    <div class="card" style="grid-column: 1 / -1;">
+      <h3>Annonces</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Titre</th>
+            <th>Création</th>
+            <th>Vues</th>
+            <th>Clicks</th>
+            <th>Expiration</th>
+          </tr>
+        </thead>
+        <tbody id="annonceTable">
+          <tr><td colspan="5">Aucune annonce</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+<script type="module">
+  alert("1 - Script dashboard démarré");
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+  import { getFirestore, collection, query, orderBy, where, limit, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+  alert("2 - Modules Firebase importés");
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBla3D7OS8-Hx82m8Tz6ZPIS7FSLury3ew",
+    authDomain: "cbc-business.firebaseapp.com",
+    projectId: "cbc-business",
+    storageBucket: "cbc-business.appspot.com",
+    messagingSenderId: "295952883135",
+    appId: "1:295952883135:web:4624174a452c1f6aad950a"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  alert("3 - Firebase initialisé");
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      alert("4 - Pas connecté, redirection...");
+      window.location.href = "login.html";
+      return;
+    }
+    alert("5 - Utilisateur connecté : " + user.email);
+
+    try {
+      alert("6 - Chargement données utilisateur");
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("userID", "==", user.uid));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        alert("7 - Aucun document utilisateur trouvé");
+        return;
+      }
+
+      const data = querySnapshot.docs[0].data();
+      document.getElementById("userName").textContent = data.name || "-";
+      document.getElementById("userEmail").textContent = data.email || "-";
+      document.getElementById("userType").textContent = data.type || "-";
+      document.getElementById("userTel").textContent = data.phone || "-";
+      document.getElementById("userDate").textContent = data.createdAt?.toDate().toLocaleDateString() || "-";
+      document.getElementById("userActive").textContent = data.status || "-";
+      if (data.url) document.getElementById("profilePic").src = data.url;
+
+      alert("11 - Fin chargement infos utilisateur");
+
+      // ---- CHARGER LES STATS ----
+      const annoncesRef = collection(db, "annonces");
+      const freeRef = collection(db, "freeAnnoces");
+      const paymentRef = collection(db, "payments");
+      const annualRef = collection(db, "annual");
+      const commandRef = collection(db, "commands");
+      const rendusRef = collection(db, "rendus");
+
+      // 1. Annonces payantes
+      const payedQuery = query(annoncesRef, where("userID", "==", user.uid), where("payedPublish", "==", true));
+      const payedSnap = await getDocs(payedQuery);
+      document.getElementById("freePaid").textContent = payedSnap.size;
+
+      // 2. Publiées
+      const freeSnap = await getDocs(query(freeRef, where("userID", "==", user.uid)));
+      const allAnnoncesSnap = await getDocs(query(annoncesRef, where("userID", "==", user.uid)));
+      document.getElementById("annonceCount").textContent = freeSnap.size + allAnnoncesSnap.size;
+      document.getElementById("freeCount").textContent = freeSnap.size;
+
+      // 3. Payments
+      const paySnap = await getDocs(query(paymentRef, where("userID", "==", user.uid), orderBy("timestamp", "desc"), limit(1)));
+      if (!paySnap.empty) {
+        const p = paySnap.docs[0].data();
+        document.getElementById("paymentFor").textContent = p.paymentFor || "-";
+        document.getElementById("paymentAmount").textContent = p.amount || "-";
+        document.getElementById("paymentDate").textContent = p.timestamp?.toDate().toLocaleDateString() || "-";
+document.getElementById("paymentExp").textContent = p.expiration?.toDate().toLocaleDateString() || "-";
+      }
+
+      // 4. Total clics
+      let totalClicks = 0;
+      allAnnoncesSnap.forEach(doc => {
+        totalClicks += doc.data().clicks || 0;
+      });
+      document.getElementById("totalClicks").textContent = totalClicks;
+      document.getElementById("freeClicks").textContent = totalClicks;
+
+      // 5. Tableau des annonces
+      const tableBody = document.getElementById("annonceTable");
+      tableBody.innerHTML = "";
+      if (allAnnoncesSnap.empty) {
+        tableBody.innerHTML = `<tr><td colspan="5">Aucune annonce</td></tr>`;
+      } else {
+        allAnnoncesSnap.forEach(doc => {
+          const d = doc.data();
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${d.titre || "nulle"}</td>
+            <td>${d.createdAt?.toDate().toLocaleDateString() || "-"}</td>
+            <td>${d.views || 0}</td>
+            <td>${d.clicks || 0}</td>
+            <td>${d.expiration?.toDate().toLocaleDateString() || "-"}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+
+      // 6. Abonnement annuel
+      const annualSnap = await getDocs(query(annualRef, where("userID", "==", user.uid)));
+if (!annualSnap.empty) {
+        const a = annualSnap.docs[0].data();
+        document.getElementById("annualStart").textContent = a.start_date?.toDate().toLocaleDateString() || "-";
+        document.getElementById("annualEnd").textContent = a.end_date?.toDate().toLocaleDateString() || "-";
+      }
+
+      // 7. Commands
+      const cmdSnap = await getDocs(query(commandRef, where("userID", "==", user.uid)));
+      document.getElementById("commandTotal").textContent = cmdSnap.size;
+      if (!cmdSnap.empty) {
+        const latestCmd = cmdSnap.docs[0].data();
+        document.getElementById("commandLast").textContent = latestCmd.timestamp?.toDate().toLocaleDateString() || "-";
+      }
+
+      // 8. Rendus
+      const renduSnap = await getDocs(query(rendusRef, where("byID", "==", user.uid)));
+      document.getElementById("renduTotal").textContent = renduSnap.size;
+
+      alert("12 - Statistiques chargées avec succès.");
+    } catch (error) {
+      alert("Erreur chargement : " + error.message);
+    }
+  });
+</script>
+</body>
+</html>
+
