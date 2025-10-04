@@ -192,62 +192,6 @@
     </div>
 
   </div>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
-  import { getStorage } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-storage.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyBla3D7OS8-Hx82m8Tz6ZPIS7FSLury3ew",
-    authDomain: "cbc-business.firebaseapp.com",
-    projectId: "cbc-business",
-    storageBucket: "cbc-business.appspot.com", // ✅ corrigé ici
-    messagingSenderId: "295952883135",
-    appId: "1:295952883135:web:4624174a452c1f6aad950a",
-    measurementId: "G-580W4D6J7E"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const storage = getStorage(app);
-
-  // === ELEMENTS DOM ===
-  const profilePic = document.getElementById('profilePic');
-  const photoURLInput = document.getElementById('photoURL');
-  const updatePhotoBtn = document.getElementById('updatePhoto');
-  const logoutBtn = document.querySelector('.logout');
-const upgradeBtn = document.getElementById('upgradeBtn');
-
-  // User info elements
-  const userNameEl = document.getElementById('userName');
-  const userEmailEl = document.getElementById('userEmail');
-  const userTypeEl = document.getElementById('userType');
-  const userTelEl = document.getElementById('userTel');
-  const userDateEl = document.getElementById('userDate');
-  const userActiveEl = document.getElementById('userActive');
-
-  // Annual subscription
-  const annualStartEl = document.getElementById('annualStart');
-  const annualEndEl = document.getElementById('annualEnd');
-
-  // Urgences
-  const urgenceStartEl = document.getElementById('urgenceStart');
-  const urgenceEndEl = document.getElementById('urgenceEnd');
-
-  // Copywriting
-  const copyTotalEl = document.getElementById('copyTotal');
-  const copySendEl = document.getElementById('copySend');
-  const copyTypeEl = document.getElementById('copyType');
-
-  // Free annonces
-  const freeCountEl = document.getElementById('freeCount');
-  const freePaidEl = document.getElementById('freePaid');
-  const freeClicksEl = document.getElementById('freeClicks');
-
-  // Analytics
-  const annonceCountEl = document.getElementById('annonceCount');
   const totalClicksEl = document.getElementById('totalClicks');
 
   // Payments
