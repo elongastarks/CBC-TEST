@@ -292,7 +292,96 @@ const profilePic = document.getElementById("profilePic");
 
       // TODO: Charger les autres données (annonces, freeAnnoces, copywriting, urgences, rendus, annual, payments, clicks)
       alert("11 - Fin chargement infos utilisateur. Ici, ajouter la récupération des stats supplémentaires.");
+alert("12 - Début récupération statistiques");
 
+// 1. Récupérer annonces
+const annoncesRef = collection(db, "annonces");
+const annoncesSnap = await getDocs(query(annoncesRef, where("userID", "==", userID)));
+let annonceCount = 0;
+let payedCount = 0;
+let totalClicks = 0;
+let tableHTML = "";
+
+annoncesSnap.forEach(doc => {
+  const data = doc.data();
+  annonceCount++;
+  if (data.payedBuplish === "true") payedCount++;
+  totalClicks += data.clicks || 0;
+
+  tableHTML += `
+    <tr>
+      <td>data.titre</td>
+      <td>{formatDate(data.date_creation?.toDate())}</td>
+      <td>data.republis || 0</td>
+      <td>{data.clicks || 0}</td>
+      <td>${data.expiration ? formatDate(data.expiration.toDate()) : "-"}</td>
+    </tr>
+  `;
+});
+
+document.getElementById("annonceCount").textContent = annonceCount;
+document.getElementById("totalClicks").textContent = totalClicks;
+document.getElementById("annonceTable").innerHTML = tableHTML || "<tr><td colspan='5'>Aucune annonce</td></tr>";
+alert("13 - Annonces chargées");
+
+// 2. Free annonces
+const freeSnap = await getDocs(query(collection(db, "freeAnnoces"), where("userID", "==", userID)));
+document.getElementById("freeCount").textContent = freeSnap.size;
+document.getElementById("freePaid").textContent = 0; // Pas dispo directement
+document.getElementById("freeClicks").textContent = "0"; // À calculer si tu stockes
+alert("14 - Free annonces chargées");
+
+// 3. Urgences
+const urgSnap = await getDocs(query(collection(db, "urgences"), where("userID", "==", userID)));
+let activeUrg = urgSnap.docs.find(doc => {
+  const start = doc.data().start_date?.toDate();
+  const end = doc.data().end_date?.toDate();
+  const now = new Date();
+  return start <= now && now <= end;
+});
+if (activeUrg) {
+  document.getElementById("urgenceStart").textContent = formatDate(activeUrg.data().start_date?.toDate());
+  document.getElementById("urgenceEnd").textContent = formatDate(activeUrg.data().end_date?.toDate());
+}
+alert("15 - Urgences chargées");
+
+// 4. Copywriting
+const copySnap = await getDocs(query(collection(db, "copywriting"), where("userID", "==", userID)));
+document.getElementById("copyTotal").textContent = copySnap.size;
+let copy = copySnap.docs[0]?.data();
+if (copy) {
+  document.getElementById("copySend").textContent = copy.send || 0;
+document.getElementById("copyType").textContent = copy.type || "-";
+}
+alert("16 - Copywriting chargé");
+
+// 5. Annual
+const annualSnap = await getDocs(query(collection(db, "annual"), where("userID", "==", userID)));
+let annual = annualSnap.docs[0]?.data();
+if (annual && annual.hasAnnual === true) {
+  document.getElementById("annualStart").textContent = formatDate(annual.creation?.toDate());
+  document.getElementById("annualEnd").textContent = formatDate(annual.exprireAt?.toDate());
+} else {
+  document.getElementById("upgradeBtn").style.display = "block";
+}
+alert("17 - Abonnement annual chargé");
+
+// 6. Payments
+const paySnap = await getDocs(query(collection(db, "payments"), where("userID", "==", userID)));
+let latestPay = paySnap.docs[0]?.data();
+if (latestPay) {
+  document.getElementById("paymentFor").textContent = latestPay.paymentFor;
+  document.getElementById("paymentAmount").textContent = latestPay.amount + " FCFA";
+  document.getElementById("paymentDate").textContent = formatDate(latestPay.timestamp?.toDate());
+  document.getElementById("paymentExp").textContent = formatDate(latestPay.expiration?.toDate());
+}
+alert("18 - Payments chargés");
+
+// ✅ Fonctions utilitaires
+function formatDate(date) {
+  if (!date) return "-";
+return date.toLocaleDateString("fr-FR", { day: 'numeric', month: 'long', year: 'numeric' });
+  }
     } catch (error) {
       alert("Erreur : " + error.message);
     }
