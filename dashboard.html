@@ -337,7 +337,7 @@ if (!annualSnap.empty) {
 
       // 7. Copywriting
 const copyRef = collection(db, "copywriting");
-const copySnap = await getDocs(query(copyRef, where("userID", "==", user.uid), orderBy("timestamp", "desc")));
+const copySnap = await getDocs(query(copyRef, where("userID", "==", user.uid), orderBy("start_date", "desc")));
 
 alert("13 - Données copywriting récupérées : " + copySnap.size);
 document.getElementById("copyTotal").textContent = copySnap.size;
