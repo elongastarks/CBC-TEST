@@ -352,9 +352,15 @@ if (!copySnap.empty) {
   }
 
       // 8. Rendus
-      const renduSnap = await getDocs(query(rendusRef, where("byID", "==", user.uid)));
-      document.getElementById("renduTotal").textContent = renduSnap.size;
+      const renduSnap = await getDocs(
+  query(rendusRef, where("byID", "==", user.uid), orderBy("date_rendu", "desc"))
+);
+document.getElementById("renduTotal").textContent = renduSnap.size;
 
+if (!renduSnap.empty) {
+  const last = renduSnap.docs[0].data();
+  document.getElementById("renduLast").textContent = last.date_rendu?.toDate().toLocaleDateString() || "-";
+  }
       alert("12 - Statistiques chargées avec succès.");
     } catch (error) {
       alert("Erreur chargement : " + error.message);
