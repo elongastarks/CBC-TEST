@@ -317,6 +317,19 @@ document.getElementById("paymentExp").textContent = p.expiration?.toDate().toLoc
         });
       }
 
+      // 7. Copywriting
+const copyRef = collection(db, "copywriting");
+const copySnap = await getDocs(query(copyRef, where("userID", "==", user.uid), orderBy("timestamp", "desc")));
+
+alert("13 - Données copywriting récupérées : " + copySnap.size);
+document.getElementById("copyTotal").textContent = copySnap.size;
+
+if (!copySnap.empty) {
+  const latestCopy = copySnap.docs[0].data();
+  document.getElementById("copySend").textContent = latestCopy.send || 0;
+  document.getElementById("copyType").textContent = latestCopy.type || "-";
+                                }
+
       // 6. Abonnement annuel
       const annualSnap = await getDocs(query(annualRef, where("userID", "==", user.uid)));
 if (!annualSnap.empty) {
@@ -332,6 +345,8 @@ if (!annualSnap.empty) {
         const latestCmd = cmdSnap.docs[0].data();
         document.getElementById("commandLast").textContent = latestCmd.timestamp?.toDate().toLocaleDateString() || "-";
       }
+
+      
 
       // 8. Rendus
       const renduSnap = await getDocs(query(rendusRef, where("byID", "==", user.uid)));
