@@ -346,7 +346,18 @@ if (!annualSnap.empty) {
         document.getElementById("commandLast").textContent = latestCmd.timestamp?.toDate().toLocaleDateString() || "-";
       }
 
-      
+      // 7. Copywriting
+const copyRef = collection(db, "copywriting");
+const copySnap = await getDocs(query(copyRef, where("userID", "==", user.uid), orderBy("timestamp", "desc")));
+
+alert("13 - Données copywriting récupérées : " + copySnap.size);
+document.getElementById("copyTotal").textContent = copySnap.size;
+
+if (!copySnap.empty) {
+  const latestCopy = copySnap.docs[0].data();
+  document.getElementById("copySend").textContent = latestCopy.send || 0;
+  document.getElementById("copyType").textContent = latestCopy.type || "-";
+  }
 
       // 8. Rendus
       const renduSnap = await getDocs(query(rendusRef, where("byID", "==", user.uid)));
