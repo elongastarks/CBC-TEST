@@ -258,7 +258,7 @@
       document.getElementById("userActive").textContent = data.status || "-";
       if (data.url) document.getElementById("profilePic").src = data.url;
 
-      alert("11 - Fin chargement infos utilisateur");
+      alert("8 - Fin chargement infos utilisateur");
 
       // ---- CHARGER LES STATS ----
       const annoncesRef = collection(db, "annonces");
@@ -326,8 +326,8 @@ if (!paySnap.empty) {
       const annualSnap = await getDocs(query(annualRef, where("userID", "==", user.uid)));
 if (!annualSnap.empty) {
         const a = annualSnap.docs[0].data();
-        document.getElementById("annualStart").textContent = a.start_date?.toDate().toLocaleDateString() || "-";
-        document.getElementById("annualEnd").textContent = a.end_date?.toDate().toLocaleDateString() || "-";
+        document.getElementById("annualStart").textContent = a.creation?.toDate().toLocaleDateString() || "-";
+        document.getElementById("annualEnd").textContent = a.exprireAt?.toDate().toLocaleDateString() || "-";
       }
 
       // 7. Commands
