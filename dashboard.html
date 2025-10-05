@@ -257,7 +257,7 @@
       document.getElementById("userType").textContent = data.type || "-";
       document.getElementById("userTel").textContent = data.tel || "-";
       document.getElementById("userDate").textContent = data.date_inscription?.toDate().toLocaleDateString() || "-";
-      document.getElementById("userActive").textContent = data.status || "-";
+      document.getElementById("userActive").textContent = data.active || "-";
       if (data.url) document.getElementById("profilePic").src = data.url;
 
       alert("8 - Fin chargement infos utilisateur");
@@ -269,6 +269,7 @@
       const annualRef = collection(db, "annual");
       const commandRef = collection(db, "commands");
       const rendusRef = collection(db, "rendus");
+      const urgencesRef = collection(db, "urgences");
 
       // 1. Annonces payantes
       const payedQuery = query(annoncesRef, where("userID", "==", user.uid), where("payedPublish", "==", true));
