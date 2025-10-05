@@ -255,8 +255,8 @@
       document.getElementById("userName").textContent = data.name || "-";
       document.getElementById("userEmail").textContent = data.email || "-";
       document.getElementById("userType").textContent = data.type || "-";
-      document.getElementById("userTel").textContent = data.phone || "-";
-      document.getElementById("userDate").textContent = data.createdAt?.toDate().toLocaleDateString() || "-";
+      document.getElementById("userTel").textContent = data.tel || "-";
+      document.getElementById("userDate").textContent = data.date_inscription?.toDate().toLocaleDateString() || "-";
       document.getElementById("userActive").textContent = data.status || "-";
       if (data.url) document.getElementById("profilePic").src = data.url;
 
