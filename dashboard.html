@@ -279,16 +279,18 @@
       document.getElementById("annonceCount").textContent = freeSnap.size + allAnnoncesSnap.size;
       document.getElementById("freeCount").textContent = freeSnap.size;
 
-      // 3. Payments
-      const paySnap = await getDocs(query(paymentRef, where("userID", "==", user.uid), orderBy("timestamp", "desc"), limit(1)));
-      if (!paySnap.empty) {
-        const p = paySnap.docs[0].data();
-        document.getElementById("paymentFor").textContent = p.paymentFor || "-";
-        document.getElementById("paymentAmount").textContent = p.amount || "-";
-        document.getElementById("paymentDate").textContent = p.timestamp?.toDate().toLocaleDateString() || "-";
-document.getElementById("paymentExp").textContent = p.expiration?.toDate().toLocaleDateString() || "-";
-      }
+  // 3. Payments
+const paySnap = await getDocs(query(paymentRef, where("userID", "==", user.uid), orderBy("timestamp", "desc"), limit(1)));
 
+if (!paySnap.empty) {
+  const p = paySnap.docs[0].data();
+  document.getElementById("paymentFor").textContent = p.paymentFor || "-";
+  document.getElementById("paymentAmount").textContent = p.amount || "-";
+  document.getElementById("paymentDate").textContent = p.timestamp?.toDate().toLocaleDateString() || "-";
+  document.getElementById("paymentExp").textContent = p.expiration?.toDate().toLocaleDateString() || "-";
+  }
+
+      
       // 4. Total clics
       let totalClicks = 0;
       allAnnoncesSnap.forEach(doc => {
