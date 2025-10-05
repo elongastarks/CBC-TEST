@@ -139,12 +139,14 @@
       <button id="upgradeBtn" style="display: none;">Upgrade</button>
     </div>
 
-    <div class="card">
+<div class="card">
       <h3>Annonces urgentes</h3>
+      <p>Total : <span id="urgenceTotal">-</span></p>
+      <p>Annonce : <span id="urgenceTitre">-</span></p>
       <p>Du : <span id="urgenceStart">-</span></p>
       <p>Au : <span id="urgenceEnd">-</span></p>
-    </div>
-
+</div>
+    
     <div class="card">
       <h3>Copywriting</h3>
       <p>Total : <span id="copyTotal">0</span></p>
@@ -361,6 +363,29 @@ if (!renduSnap.empty) {
   const last = renduSnap.docs[0].data();
   document.getElementById("renduLast").textContent = last.date_rendu?.toDate().toLocaleDateString() || "-";
   }
+ // 9. Annonces urgentes
+const urgSnap = await getDocs(query(urgencesRef, where("userID", "==", user.uid), orderBy("start_date", "desc")));
+
+document.getElementById("urgenceTotal").textContent = urgSnap.size;
+
+if (!urgSnap.empty) {
+  const lastUrg = urgSnap.docs[0].data();
+
+  // Dates
+  document.getElementById("urgenceStart").textContent = lastUrg.start_date?.toDate().toLocaleDateString() || "-";
+  document.getElementById("urgenceEnd").textContent = lastUrg.end_date?.toDate().toLocaleDateString() || "-";
+
+  // Titre depuis la collection annonces
+  const annonceID = lastUrg.annonceID;
+  if (annonceID) {
+    const annonceDoc = await getDoc(doc(db, "annonces", annonceID));
+    if (annonceDoc.exists()) {
+      const annonceData = annonceDoc.data();
+      document.getElementById("urgenceTitre").textContent = annonceData.titre || "-";
+    }
+  }
+  }
+      
       alert("12 - Statistiques chargées avec succès.");
     } catch (error) {
       alert("Erreur chargement : " + error.message);
