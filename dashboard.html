@@ -348,7 +348,7 @@ if (!annualSnap.empty) {
       document.getElementById("commandTotal").textContent = cmdSnap.size;
       if (!cmdSnap.empty) {
         const latestCmd = cmdSnap.docs[0].data();
-        document.getElementById("commandLast").textContent = latestCmd.timestamp?.toDate().toLocaleDateString() || "-";
+        document.getElementById("commandLast").textContent = latestCmd.date_commande?.toDate().toLocaleDateString() || "-";
       }
 
       // 7. Copywriting
