@@ -312,7 +312,7 @@ if (!paySnap.empty) {
           const tr = document.createElement("tr");
           tr.innerHTML = `
             <td>${d.titre || "nulle"}</td>
-            <td>${d.createdAt?.toDate().toLocaleDateString() || "-"}</td>
+            <td>${d.date_creation?.toDate().toLocaleDateString() || "-"}</td>
             <td>${d.views || 0}</td>
             <td>${d.clicks || 0}</td>
             <td>${d.expiration?.toDate().toLocaleDateString() || "-"}</td>
