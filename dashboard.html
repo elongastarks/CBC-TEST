@@ -283,6 +283,7 @@
 
       // 3. Payments
       alert("3.1 - Début chargement payments");
+      alert("3.1 - Début chargement payments");
 
 const paySnap = await getDocs(query(paymentRef, where("userID", "==", user.uid), limit(1)));
 
@@ -301,6 +302,8 @@ if (paySnap.empty) {
 
   alert("3.5 - Paiement affiché dans le DOM");
   }
+
+
       
       // 4. Total clics
       let totalClicks = 0;
