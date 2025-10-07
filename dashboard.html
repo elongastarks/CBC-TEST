@@ -312,9 +312,7 @@ if (paySnap.empty) {
   document.getElementById("paymentExp").textContent = p.expiration?.toDate().toLocaleDateString() || "-";
 
   alert("3.5 - Paiement affiché dans le DOM");
-  }
-
-
+}
       
       // 4. Total clics
       let totalClicks = 0;
@@ -422,21 +420,16 @@ if (!urgSnap.empty) {
       alert("Erreur lors de la déconnexion");
     });
   });
-  
-  document.getElementById("updatePhoto").addEventListener("click", async () => {
-  const url = document.getElementById("photoURL").value.trim(); 
-    const n = query(collection(db, "users"), where("userID", "==", user.uid));
-    const snap = await getDocs(n);
-    if (snap.empty) {
-      alert("Utilisateur non trouvé.");
-      return;
-    }
 
-    const docRef = snap.docs[0].ref;
-    await updateDoc(docRef, { url });
-    alert("Photo de profil mise à jour !");
-  });
+  document.getElementById("updatePhoto").addEventListener("click", async () => {
+  const photoURL = document.getElementById("photoURL").value.trim();
+  if (!photoURL) return alert("Lien vide.");
+
+  const docRef = querySnapshot.docs[0].ref;
+  await updateDoc(docRef, { url: photoURL });
+  alert("Photo mise à jour !");
 });
+  
 </script>
 </body>
 </html>
