@@ -282,16 +282,25 @@
       document.getElementById("freeCount").textContent = freeSnap.size;
 
       // 3. Payments
+      alert("3.1 - Début chargement payments");
+
 const paySnap = await getDocs(query(paymentRef, where("userID", "==", user.uid), limit(1)));
 
-if (!paySnap.empty) {
+alert("3.2 - Résultat getDocs : " + paySnap.size);
+
+if (paySnap.empty) {
+  alert("3.3 - Aucun document trouvé dans payments");
+} else {
   const p = paySnap.docs[0].data();
+  alert("3.4 - Données du paiement : " + JSON.stringify(p));
+
   document.getElementById("paymentFor").textContent = p.paymentFor || "-";
   document.getElementById("paymentAmount").textContent = p.amount || "-";
   document.getElementById("paymentDate").textContent = p.timestamp?.toDate().toLocaleDateString() || "-";
   document.getElementById("paymentExp").textContent = p.expiration?.toDate().toLocaleDateString() || "-";
-  }
 
+  alert("3.5 - Paiement affiché dans le DOM");
+  }
       
       // 4. Total clics
       let totalClicks = 0;
