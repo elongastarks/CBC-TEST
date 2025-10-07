@@ -422,6 +422,29 @@ if (!urgSnap.empty) {
       alert("Erreur lors de la déconnexion");
     });
   });
+  
+  document.getElementById("updatePhoto").addEventListener("click", async () => {
+  const url = document.getElementById("photoURL").value.trim();
+  if (!url) {
+    alert("Veuillez entrer une URL.");
+    return;
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
+
+    const q = query(collection(db, "users"), where("userID", "==", user.uid));
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      alert("Utilisateur non trouvé.");
+      return;
+    }
+
+    const docRef = snap.docs[0].ref;
+    await updateDoc(docRef, { url });
+    alert("Photo de profil mise à jour !");
+  });
+});
 </script>
 </body>
 </html>
