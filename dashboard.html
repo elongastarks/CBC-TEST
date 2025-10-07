@@ -224,7 +224,7 @@
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-  import { getFirestore, collection, query, orderBy, where, limit, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+  import { getFirestore, collection, query, orderBy, where, limit, getDocs, getDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
   alert("2 - Modules Firebase importés");
 
   const firebaseConfig = {
@@ -272,6 +272,7 @@
 
       alert("8 - Fin chargement infos utilisateur");
       document.getElementById("updatePhoto").addEventListener("click", async () => {
+        alert("click");
   const photoURL = document.getElementById("photoURL").value.trim();
   if (!photoURL) return alert("Lien vide.");
 
