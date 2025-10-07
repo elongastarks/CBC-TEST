@@ -271,6 +271,14 @@
       if (data.url) document.getElementById("profilePic").src = data.url;
 
       alert("8 - Fin chargement infos utilisateur");
+      document.getElementById("updatePhoto").addEventListener("click", async () => {
+  const photoURL = document.getElementById("photoURL").value.trim();
+  if (!photoURL) return alert("Lien vide.");
+
+  const docRef = querySnapshot.docs[0].ref;
+  await updateDoc(docRef, { url: photoURL });
+  alert("Photo mise à jour !");
+});
 
       // ---- CHARGER LES STATS ----
       const annoncesRef = collection(db, "annonces");
@@ -340,9 +348,7 @@ if (paySnap.empty) {
           `;
           tableBody.appendChild(tr);
         });
-      }
-
-      
+  }
 
       // 6. Abonnement annuel
       const annualSnap = await getDocs(query(annualRef, where("userID", "==", user.uid)));
@@ -420,16 +426,6 @@ if (!urgSnap.empty) {
       alert("Erreur lors de la déconnexion");
     });
   });
-
-  document.getElementById("updatePhoto").addEventListener("click", async () => {
-  const photoURL = document.getElementById("photoURL").value.trim();
-  if (!photoURL) return alert("Lien vide.");
-
-  const docRef = querySnapshot.docs[0].ref;
-  await updateDoc(docRef, { url: photoURL });
-  alert("Photo mise à jour !");
-});
-  
 </script>
 </body>
 </html>
