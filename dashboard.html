@@ -424,17 +424,9 @@ if (!urgSnap.empty) {
   });
   
   document.getElementById("updatePhoto").addEventListener("click", async () => {
-  const url = document.getElementById("photoURL").value.trim();
-  if (!url) {
-    alert("Veuillez entrer une URL.");
-    return;
-  }
-
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) return;
-
-    const q = query(collection(db, "users"), where("userID", "==", user.uid));
-    const snap = await getDocs(q);
+  const url = document.getElementById("photoURL").value.trim(); 
+    const n = query(collection(db, "users"), where("userID", "==", user.uid));
+    const snap = await getDocs(n);
     if (snap.empty) {
       alert("Utilisateur non trouvé.");
       return;
