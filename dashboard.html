@@ -402,6 +402,15 @@ if (!urgSnap.empty) {
       alert("Erreur chargement : " + error.message);
     }
   });
+  document.querySelector(".logout").addEventListener("click", () => {
+    signOut(auth).then(() => {
+      alert("Déconnexion réussie");
+      window.location.href = "login.html"; // Redirige vers la page de connexion
+    }).catch((error) => {
+      console.error("Erreur déconnexion :", error);
+      alert("Erreur lors de la déconnexion");
+    });
+  });
 </script>
 </body>
 </html>
