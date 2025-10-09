@@ -254,8 +254,7 @@ onSnapshot(collection(db, "users"), snap => {
 
       document.getElementById("payments-count").textContent = totalCount;
       document.getElementById("payments-amount").textContent = `
-    
-{totalAmount}`;
+    ${totalAmount}`;
       document.getElementById("last-payment").textContent = latest ? latest.toLocaleDateString() : "-";
     });
     // COMMANDS (non vues / vues)
