@@ -153,6 +153,7 @@
     collection,
     doc,
     onSnapshot,
+    getDoc,
     query,
     where,
     orderBy,
@@ -299,25 +300,33 @@ onSnapshot(collection(db, "users"), snap => {
     });
 
     // INFOS (doc unique)
-    const infoRef = doc(db, "infos", "info");
-    onSnapshot(infoRef, snap => {
-      if (snap.exists()) {
-        const d = snap.data();
-        document.getElementById("info").textContent = d.info || "";
-      }
-    });
+    // Charger le message existant
+const infosRef = doc(db, "infos", "unique"); // document ID fixe "unique"
+getDoc(infosRef).then((docSnap) => {
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    document.getElementById("info").textContent = data.info || "Pas de message";
+  } else {
+    document.getElementById("info").textContent = "Aucun message trouvé.";
+  }
+});
 
-    document.getElementById("add-infos").addEventListener("click", async e => {
-      e.preventDefault();
-      const val = document.getElementById("infos").value.trim();
-      if (!val) return;
-      await setDoc(infoRef, { text: val });
-    });
+// Ajouter / Modifier le message
+document.getElementById("add-infos").addEventListener("click", async (e) => {
+  e.preventDefault();
+  const message = document.getElementById("infos").value.trim();
+  if (!message) return alert("Message vide.");
+  await setDoc(infosRef, { info: message });
+  document.getElementById("info").textContent = message;
+  document.getElementById("infos").value = "";
+});
 
-    document.getElementById("dlt-infos").addEventListener("click", async e => {
-      e.preventDefault();
-      await deleteDoc(infoRef);
-    });
+// Supprimer le message
+document.getElementById("dlt-infos").addEventListener("click", async (e) => {
+  e.preventDefault();
+  await deleteDoc(infosRef);
+  document.getElementById("info").textContent = "Aucun message.";
+});
 
     // Copywriting redirection
     document.getElementById("copywriting-btn").addEventListener("click", () => {
