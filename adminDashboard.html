@@ -187,8 +187,6 @@
 onSnapshot(collection(db, "users"), snap => {
       const total = snap.size;
       let entreprise = 0, personnel = 0;
-      const today = new Date();
-      today.setHours(0,0,0,0);
 
       snap.forEach(doc => {
         const d = doc.data();
@@ -196,9 +194,18 @@ onSnapshot(collection(db, "users"), snap => {
         if (t === "entreprise") entreprise++;
         else if (t === "personnel") personnel++;
 
-        const ins = d.date_inscription?.toDate?.();
-  if (ins && ins >= today) todayCount++;
-      });
+        const today = new Date();
+today.setHours(0, 0, 0, 0); // réinitialiser à minuit
+
+const insDate = d.date_inscription?.toDate?.();
+if (insDate) {
+  const userDate = new Date(insDate);
+  userDate.setHours(0, 0, 0, 0); // réinitialiser aussi à minuit
+
+  if (userDate.getTime() === today.getTime()) {
+    todayCount++;
+  }
+                   }
 
       document.getElementById("total-users").textContent = total;
       document.getElementById("entreprise-count").textContent = entreprise;
