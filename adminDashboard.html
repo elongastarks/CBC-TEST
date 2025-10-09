@@ -195,15 +195,14 @@ onSnapshot(collection(db, "users"), snap => {
         if (t === "entreprise") entreprise++;
         else if (t === "personnel") personnel++;
 
-        const ins = d.date_inscription?.toDate();
-        if (ins && ins >= today) {
-          // tu peux compter ici les inscriptions d’aujourd’hui si tu veux
-        }
+        const ins = d.date_inscription?.toDate?.();
+  if (ins && ins >= today) todayCount++;
       });
 
       document.getElementById("total-users").textContent = total;
       document.getElementById("entreprise-count").textContent = entreprise;
       document.getElementById("personal-count").textContent = personnel;
+      document.getElementById("users-today").textContent = todayCount;
     });
 
     // ANNONCES : total + actifs + pending
