@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CBC BUSINESS - Admin Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f4f6f8;
+    }
+
+    .dashboard {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #2e3b4e;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .copy-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 20px 0;
+      background: #007bff;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: #0056b3;
+    }
+
+    .tip-card {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .tip-card h3 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <header>
+      <h1>CBC BUSINESS</h1>
+      <span>ADMIN DASHBOARD</span>
+    </header>
+
+    <div class="grid">
+      <div class="card" id="users-card">
+        <h2>USERS</h2>
+        <p><strong id="total-users">1,240</strong></p>
+        <p><span id="entreprise-count">800</span> entreprise</p>
+        <p><span id="personal-count">440</span> personal</p>
+        <p>+<span id="users-today">5</span> today</p>
+      </div>
+
+      <div class="card" id="annonces-card">
+        <h2>ANNONCES</h2>
+        <p><strong id="total-annonces">315</strong></p>
+        <p><span id="annonces-active">200</span> Active</p>
+        <p><span id="annonces-rendu">80</span> Rendu</p>
+        <p><span id="annonces-pending">35</span> Pending</p>
+        <p><span id="annonces-urgent">25</span> Urgent</p>
+        <p><span id="annonces-copy">10</span> Copywriting</p>
+      </div>
+
+      <div class="card" id="payments-card">
+        <h2>PAYMENTS</h2>
+        <p><strong><span id="payments-count">2,349</span></strong></p>
+        <p>Total amount: <strong><span id="payments-amount">$7,500</span></strong></p>
+        <p>Last payment: <span id="last-payment">↓</span></p>
+        </div>
+
+      <div class="card" id="commands-card">
+        <h2>COMMANDS</h2>
+        <p><strong><span id="cmd-pending">8</span></strong> Pending</p>
+        <p>Viewed <span id="cmd-viewed">120</span></p>
+      </div>
+
+      <div class="card" id="comments-card">
+        <h2>COMMENTS</h2>
+        <p><strong><span id="comments-pending">8</span></strong> NotApproved</p>
+        <p><span id="comments-approved">4</span> Approved</p>
+      </div>
+
+      <div class="card" id="annual-card">
+        <h2>ANNUAL SUBSCRIPTIONS</h2>
+        <p><strong><span id="annual-total">50</span></strong></p>
+        <p><span id="annual-active">5</span> Actives</p>
+        <p>Exp: <span id="annual-exp">name</span></p>
+      </div>
+    </div>
+
+    <button class="copy-btn" id="copywriting-btn">Générer copywriting</button>
+
+    <div class="tip-card" id="tip-card">
+      <p><span id="info">fréquentez régulièrement les évènements locaux!</span></p>
+      <form>
+        <label for="infos">Message vers collections infos (doc unique)</label>
+        <input type="text" id="infos" placeholder="message ">
+        <button id="add-infos">Ajouter</button>
+        <button id="dlt-infos">Supprimer</button>
+      </form>
+    </div>
+  </div>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    doc,
+    onSnapshot,
+    query,
+    where,
+    orderBy,
+    limit,
+    setDoc,
+    deleteDoc
+  } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBla3D7OS8-Hx82m8Tz6ZPIS7FSLury3ew",
+    authDomain: "cbc-business.firebaseapp.com",
+    projectId: "cbc-business",
+    storageBucket: "cbc-business.appspot.com",
+    messagingSenderId: "295952883135",
+    appId: "1:295952883135:web:4624174a452c1f6aad950a",
+    measurementId: "G-580W4D6J7E"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, user => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    // USERS : total, entreprise, pluston (personnel)
+onSnapshot(collection(db, "users"), snap => {
+      const total = snap.size;
+      let entreprise = 0, personnel = 0;
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
+      snap.forEach(doc => {
+        const d = doc.data();
+        const t = d.type;
+        if (t === "entreprise") entreprise++;
+        else if (t === "personnel") personnel++;
+
+        const ins = d.date_inscription?.toDate();
+        if (ins && ins >= today) {
+          // tu peux compter ici les inscriptions d’aujourd’hui si tu veux
+        }
+      });
+
+      document.getElementById("total-users").textContent = total;
+      document.getElementById("entreprise-count").textContent = entreprise;
+      document.getElementById("personal-count").textContent = personnel;
+    });
+
+    // ANNONCES : total + actifs + pending
+    onSnapshot(collection(db, "annonces"), snap => {
+      const total = snap.size;
+      let activeCount = 0, pendingCount = 0;
+
+      snap.forEach(doc => {
+        const d = doc.data();
+        if (d.etat === "actif") activeCount++;
+        if (d.etat === "pending") pendingCount++;
+      });
+
+      document.getElementById("total-annonces").textContent = total;
+      document.getElementById("annonces-active").textContent = activeCount;
+    document.getElementById("annonces-pending").textContent = pendingCount;
+    });
+
+    // RENDUS : collection "rendus"
+    onSnapshot(collection(db, "rendus"), snap => {
+      document.getElementById("annonces-rendu").textContent = snap.size;
+    });
+
+    // URGENTS : collection "urgents"
+    onSnapshot(collection(db, "urgences"), snap => {
+      document.getElementById("annonces-urgent").textContent = snap.size;
+    });
+
+    // COPYWRITING : collection "copywriting"
+    onSnapshot(collection(db, "copywriting"), snap => {
+      document.getElementById("annonces-copy").textContent = snap.size;
+    });
+
+    // PAYMENTS : nombre, total, dernier
+    onSnapshot(collection(db, "payments"), snap => {
+      const totalCount = snap.size;
+      let totalAmount = 0;
+      let latest = null;
+
+      snap.forEach(doc => {
+        const d = doc.data();
+        totalAmount += d.amount || 0;
+        const ts = d.timestamp?.toDate();
+        if (ts && (!latest || ts > latest)) {
+          latest = ts;
+        }
+      });
+
+      document.getElementById("payments-count").textContent = totalCount;
+      document.getElementById("payments-amount").textContent = `
+    
+{totalAmount}`;
+      document.getElementById("last-payment").textContent = latest ? latest.toLocaleDateString() : "-";
+    });
+    // COMMANDS (non vues / vues)
+    onSnapshot(collection(db, "commands"), snap => {
+      let notViewed = 0, viewed = 0;
+      snap.forEach(doc => {
+        const d = doc.data();
+        if (d.view === "false" || d.view === false) notViewed++;
+        else viewed++;
+      });
+      document.getElementById("cmd-pending").textContent = notViewed;
+      document.getElementById("cmd-viewed").textContent = viewed;
+    });
+
+    // COMMENTS APPROVED (collection comments)
+    onSnapshot(collection(db, "comments"), snap => {
+      document.getElementById("comments-approved").textContent = snap.size;
+    });
+
+    // COMMENTS PENDING (collection pendingComments)
+    onSnapshot(collection(db, "pendingComments"), snap => {
+      document.getElementById("comments-pending").textContent = snap.size;
+    });
+
+    // ANNUAL SUBSCRIPTIONS
+    onSnapshot(collection(db, "annual"), snap => {
+      const list = snap.docs.map(d => d.data());
+      const total = list.length;
+      let activeCount = 0;
+      let expirations = [];
+
+      list.forEach(d => {
+        if (d.hasAnnual) activeCount++;
+        if (d.exprireAt) expirations.push(d.exprireAt.toDate());
+      });
+
+      expirations.sort((a, b) => a - b);
+      const nextExp = expirations.length > 0 ? expirations[0].toLocaleDateString() : "-";
+      document.getElementById("annual-total").textContent = total;
+      document.getElementById("annual-active").textContent = activeCount;
+      document.getElementById("annual-exp").textContent = nextExp;
+    });
+
+    // INFOS (doc unique)
+    const infoRef = doc(db, "infos", "info");
+    onSnapshot(infoRef, snap => {
+      if (snap.exists()) {
+        const d = snap.data();
+        document.getElementById("info").textContent = d.info || "";
+      }
+    });
+
+    document.getElementById("add-infos").addEventListener("click", async e => {
+      e.preventDefault();
+      const val = document.getElementById("infos").value.trim();
+      if (!val) return;
+      await setDoc(infoRef, { text: val });
+    });
+
+    document.getElementById("dlt-infos").addEventListener("click", async e => {
+      e.preventDefault();
+      await deleteDoc(infoRef);
+    });
+
+    // Copywriting redirection
+    document.getElementById("copywriting-btn").addEventListener("click", () => {
+      window.location.href = "setCopywrite.html";
+    });
+
+  });
+</script>
+</body>
+</html>
+
+
